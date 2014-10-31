@@ -81,13 +81,9 @@ SOFTWARE.
 				// Used for all chart types
 				margin: 5,
 				showLegend: false,
-				fillStyle: 'rgb(0,0,0,0)', // Only used for pie right now, but could be used for all
 				legend: {
 					position: 'bottom',
-					inside: false,
-					fillStyle: 'none',
-					strokeStyle: 'none',
-					font: '11px Droid Sans'
+					inside: false
 				},
 
 				// Used for pie
@@ -97,7 +93,7 @@ SOFTWARE.
 				innerMargin: 3
 			},
 			dataset: {
-				type: 'line', // line || scatter || area || bar
+				type: 'line', // line || scatter || area || bar || pie || box || error || ohlc || candle
 
 				x: { axis: 1 },
 				y: { axis: 1 },
@@ -105,8 +101,6 @@ SOFTWARE.
 				// type: 'line' or 'area'
 				lineWidth: 2,
 				lineSmooth: true,
-				strokeStyle: '#454545',
-				fillStyle: '#343536',
 
 				dotWidth: 4,		// type: scatter
 
@@ -123,14 +117,14 @@ SOFTWARE.
 				min: 'auto',
 				max: 'auto',
 				showscale: false,
-				scaleStyle: '#FFFFFF',
 				gridLines: false,
-				gridStyle: '#353637',
+
 				name: undefined,
-				font: '10px Droid Sans',
+
+				labels: false,
 				labelFormat: formats.default,
 				labelRotation: 0,
-				showlabels: false,
+
 				showCenter: false,
 				majorTickHeight: 4,
 				center: 0,
@@ -139,7 +133,8 @@ SOFTWARE.
 				numeric: true,				// Handle this as an numerical (continouos) axis, or a text-axis
 				
 				// Used internaly
-				_textSize: 0,				// Parsed height of font in pixels
+				_nameTextSize: 0,				// Parsed height of font in pixels
+				_labelTextSize: 0,				// Parsed height of font in pixels
 				_h: undefined,
 				_step: Infinity,
 				_steps: 0,
@@ -155,6 +150,54 @@ SOFTWARE.
 				_usedPos: [],				// Used for stacking charts
 				_usedNeg: []
 				
+			}
+		},
+
+		// Themes
+		themes = {
+			dark: {
+				settings: {
+					fillStyle: 'rgb(0,0,0,0)',
+					legend: {
+						fillStyle: 'none',
+						strokeStyle: 'none',
+						font: '11px Droid Sans'
+					}
+				},
+				dataset: {
+					strokeStyle: '#454545',
+					fillStyle: '#343536'
+				},
+				axis: {
+					scaleStyle: '#FFFFFF',
+					gridStyle: '#353637',
+					nameFont: 'auto',
+					nameStyle: 'auto',
+					labelFont: '11px Droid Sans',
+					labelStyle: 'auto'
+				}
+			},
+			light: {
+				settings: {
+					fillStyle: 'rgb(0,0,0,0)',
+					legend: {
+						fillStyle: 'none',
+						strokeStyle: 'none',
+						font: '11px Droid Sans'
+					}
+				},
+				dataset: {
+					strokeStyle: '#AAAAAA',
+					fillStyle: '#F0F099'
+				},
+				axis: {
+					scaleStyle: '#AAAAAA',
+					gridStyle: '#BBBBBB',
+					nameFont: 'auto',
+					nameStyle: 'auto',
+					labelFont: '11px Droid Sans',
+					labelStyle: 'auto'
+				}
 			}
 		},
 
@@ -181,6 +224,9 @@ SOFTWARE.
 
 			// Object helpers
 			object: {
+				is: function (it) {
+					return Object.prototype.toString.call(it) === '[object Object]';
+				},
 				merge: function (target, source, recurse) {
 					var name;
 
@@ -549,19 +595,40 @@ SOFTWARE.
 			return new Grapho(settings);
 		}
 
+		// Make a local copy of defaults
+		this.defs = helpers.object.merge({}, defaults);
+
+		// Theme support
+		if (settings.theme !== undefined) {
+			// Check for user supplied theme
+			if (helpers.object.is(settings.theme)) {
+				this.defs = helpers.object.merge(this.defs,helpers.object.merge(themes.dark, settings.theme));
+			// This is supposed to be a theme name
+			} else {
+				if (themes[settings.theme] !== undefined ){
+					this.defs = helpers.object.merge(this.defs,themes[settings.theme]);
+				} else {
+					console.error('Grapho: Theme not found (' + settings.theme + ')');
+				}
+			}
+		} else {
+			this.defs = helpers.object.merge(this.defs,themes.dark);
+		}
+
 		// Setup default settings
 		this.yAxises = [];
 		this.xAxises = [];
 		this.datasets = [];
 
-		this.container = defaults.container;
-		this.settings = helpers.object.merge(defaults.settings, settings);
+		this.container = this.defs.container;
+		this.settings = helpers.object.merge(this.defs.settings, settings);
 
 		// These aren't settings but needed properties.
 		this.id = graphos.push(this) - 1;
 
 		this.canvas = document.createElement('canvas');
 		this.ctx = this.canvas.getContext('2d');
+
 
 		// Element width and height
 		this.w = 0;
@@ -622,7 +689,7 @@ SOFTWARE.
 
 	};
 
-	prot.addDataset = function (dataset) {
+	prot.addDataSet = function (dataset) {
 		var datasetIsArray = helpers.array.is(dataset);
 
 		// Check that we got some type of valid object as parameter
@@ -633,7 +700,7 @@ SOFTWARE.
 		}
 
 		// Define some reasonable defaults for each dataset
-		var def = defaults.dataset;
+		var def = this.defs.dataset;
 
 		// `dataset` can be either an array or an object.
 		if (datasetIsArray) {
@@ -649,8 +716,8 @@ SOFTWARE.
 
 		// Merge suppied axis settings, with current axis settings with the default axis settings
 		// This both initiate axis values for new axises, and reuses current values for existing
-		this.yAxises[def.y.axis] = helpers.object.merge(defaults.axis, helpers.object.merge(this.yAxises[def.y.axis], def.y));
-		this.xAxises[def.x.axis] = helpers.object.merge(defaults.axis, helpers.object.merge(this.xAxises[def.x.axis], def.x));
+		this.yAxises[def.y.axis] = helpers.object.merge(this.defs.axis, helpers.object.merge(this.yAxises[def.y.axis], def.y));
+		this.xAxises[def.x.axis] = helpers.object.merge(this.defs.axis, helpers.object.merge(this.xAxises[def.x.axis], def.x));
 
 		// Push dataset to axis
 		this.pushDataset(def);
@@ -726,9 +793,6 @@ SOFTWARE.
 					}
 				}	
 			}
-
-			//
-
 		}
 
 		// Determine if this is a numerical axis or not
@@ -825,7 +889,7 @@ SOFTWARE.
 		else if (msd > 1) {	msd = 2; }
 		
 		newStepSize 	= msd * power;
-		//if(newStepSize < oldStep) { newStepSize = oldStep; }
+		if(newStepSize < oldStep) { newStepSize = oldStep; }
 		axis._startMinVal = axis._minVal - (axis._minVal % newStepSize);
 
 		newSteps 		= Math.round(Math.ceil((axis._range) / newStepSize)) ;
@@ -894,8 +958,8 @@ SOFTWARE.
 		pad = (axis._padded)?mpxpdiff/2:0;
 		innerWidth = (lwsw-pad*2);
 
-		// Set font
-		context.font = axis.font;
+		// Set font for labels
+		context.font = axis.labelFont;
 
 		// Draw grid and ticks, start out from axis _startMinVal and work up from there
 		dir=[+Math.abs(axis._step),-Math.abs(axis._step)];
@@ -917,7 +981,9 @@ SOFTWARE.
 				}
 
 				// Render labels
-				if(axis.showLabels) {
+				if(axis.labels) {
+
+					context.font = axis.labelFont;
 
 					context.save();
 					context.beginPath();
@@ -930,7 +996,7 @@ SOFTWARE.
 						text = axis.labelFormat(k);	
 					}
 					
-					labeldim = helpers.math.bboxrot(context.measureText(text).width,axis._textSize,lr);
+					labeldim = helpers.math.bboxrot(context.measureText(text).width,axis._labelTextSize,lr);
 
 					if (orientation==='y') {
 						context.scale(-1,1);
@@ -940,16 +1006,16 @@ SOFTWARE.
 						temp2 = temp;
 					}	
 
-					y = axis._offset+axis._h-labeldim.height/2-(axis.showScale?axis.majorTickHeight+1:0)-2;
+					y = axis._offset+axis._h-labeldim.height*1.2/2-(axis.showScale?axis.majorTickHeight+1:0)-2;
 					if (!primary) {
 						y = h-y;
 					}
 					
 					context.translate(temp2,y);
 					context.rotate(lr*helpers.math.degToRad);
-					context.translate(-context.measureText(text).width/2,axis._textSize/3);
+					context.translate(-context.measureText(text).width/2,axis._labelTextSize/3);
 
-					context.fillStyle = axis.scaleStyle;
+					context.fillStyle = (axis.labelStyle === 'auto') ? axis.scaleStyle : axis.labelStyle;
 					context.fillText(text,0,0);
 
 					context.restore();
@@ -999,19 +1065,22 @@ SOFTWARE.
 		}
 
 		// Render names
+		context.font = axis.nameFont;
 		if (axis.name) {
-			context.font=axis.font;
-			context.fillStyle=axis.scaleStyle;
+			
+			context.font = (axis.nameFont === 'auto') ? axis.labelFont : axis.nameFont;
+			context.fillStyle = (axis.nameStyle === 'auto') ? axis.scaleStyle : axis.nameStyle;
+
 			if (primary) {
-				temp = axis._offset+axis._textSize/1.2;
+				temp = axis._offset+axis._nameTextSize/1.2;
 			} else {
-				temp = h-axis._offset-axis._textSize/2.2;
+				temp = h-axis._offset-axis._nameTextSize/2.2;
 			}
 			context.save();
 			if (orientation==='y') {
 				context.scale(1,-1);
 				context.translate(0,-this.h);
-				temp2 = h-temp+axis._textSize/1.9;
+				temp2 = h-temp+axis._nameTextSize/1.9;
 			} else {
 				temp2 = temp;
 			}
@@ -1113,25 +1182,26 @@ SOFTWARE.
 
 	prot.calcAxisSpace = function(axis,ctx,dir) {
 		var mw, i, tw, th;
-		axis._textSize = (axis.font !== undefined) ? parseInt(axis.font.split(' ')[0]) : 0;
+		axis._labelTextSize = (axis.labels) ? parseInt(axis.labelFont.split(' ')[0]) : 0;
+		axis._nameTextSize = (axis.name !== undefined) ? ((axis.nameFont !== 'auto') ? parseInt(axis.nameFont.split(' ')[0]) : parseInt(axis.labelFont.split(' ')[0])) : 0;
 		axis._h = 0;
-		axis._h += (axis.showScale) ? 1 : 0;				// Add one pixel for scale
+		axis._h += (axis.showScale) ? 1 : 0;					// Add one pixel for scale
 		axis._h += (axis.showScale) ? axis.majorTickHeight : 0;	// Add n pixels for major ticks
-		axis._h += (axis.name) ? axis._textSize : 0; // Add n pixels for name
-		if (axis.showLabels) {
+		axis._h += (axis.name) ? axis._nameTextSize * 1.7 : 0; 		// Add font size + 30% pixels for name
+		if (axis.labels) {
+			ctx.font = axis.labelFont;
 			mw = 0;
 			for (i=axis._minVal; i<=axis._maxVal; i+=axis._step) {
-
 				if (axis._labels && axis._labels[i] !== undefined) {
 					tw = ctx.measureText(axis.labelFormat(axis._labels[i])).width;
 				} else {
 					tw = ctx.measureText(axis.labelFormat(i)).width;
 				}
-				th = axis._textSize;
+				th = axis._labelTextSize;
 
 				// Rot 0 is different in x and y
 
-				tw = helpers.math.bboxrot(tw,th,axis.labelRotation+((dir==='x')?90:0)).width;
+				tw = helpers.math.bboxrot(tw,th,axis.labelRotation+((dir==='x')?90:0)).width*1.2,1;
 
 				if(tw > mw) { mw = tw; }
 			}

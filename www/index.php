@@ -26,12 +26,12 @@ if(!$db)
 						scaleStyle: '#F0F066',
 						name: "Level",
 						showGridLines: true,
-						showLabels: true,
+						labels: true,
 						max: 1024,
 						min: 100
 					},
 					x: {
-						showLabels: true,
+						labels: true,
 						labelRotation: 45,
 						labelFormat: Grapho.formats.time
 					},
@@ -49,13 +49,13 @@ if(!$db)
                                         y: {
                                                 scaleStyle: '#F0F066',
                                                 showGridLines: true,
-                                                showLabels: true,
+                                                labels: true,
                                                 name: "Centigrades",
 						min: 15,
 						max: 50
                                         },
                                         x: {
-                                                showLabels: true,
+                                                labels: true,
                                                 labelRotation: 45,
                                                 labelFormat: Grapho.formats.time
                                         },
