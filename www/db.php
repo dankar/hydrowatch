@@ -9,6 +9,7 @@ class sensor_db extends SQLite3
 
 	function get_data($num, $table)
 	{
+		// TODO: better query
 		$sql = "SELECT * FROM (SELECT value, timestamp FROM " .  $table . " ORDER BY timestamp DESC LIMIT " . $num . ") sub ORDER BY timestamp ASC";
 		$ret = $this->query($sql);
 		$response = "";
