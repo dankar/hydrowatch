@@ -1,0 +1,1 @@
+Load arduino with "arduino/sensors/", Point web server to "www/", start "logger/logger.py"
