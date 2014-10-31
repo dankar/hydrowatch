@@ -14,7 +14,7 @@ if(!$db)
 		<title>Hydrowatch</title>
 		<script src="js/grapho.js"></script>
 	</head>
-	<body style="background-color: #251337; color: #CACACA; font-size: 12px; font-family: 'Droid Sans';">
+	<body style="background-color: #251340; color: #CACACA; font-size: 12px; font-family: 'Droid Sans';">
 		<div id="day_level" style="margin-top: 50px; margin-left: 50px; width: 500; height: 300;">
 			<span><h2>Water level</h2></span>
 			<script>
