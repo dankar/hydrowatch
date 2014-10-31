@@ -1,4 +1,4 @@
 #!/bin/sh
 
-cat "test" >> /home/pi/hydrowatch/testlog
+echo "test" >> /home/pi/hydrowatch/testlog
 git pull
