@@ -10,7 +10,7 @@ class sensor_db extends SQLite3
 	function get_data($num, $table)
 	{
 		// TODO: better query
-		$sql = "SELECT (strftime('%s',timestamp)/600)*600, AVG(value) FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') group by (strftime('%s',timestamp)/600)*600 ORDER BY (strftime('%s',timestamp)/600)*600 DESC";
+		$sql = "SELECT 0+strftime('%s',timestamp), value FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') ORDER BY strftime('%s',timestamp) DESC";
 		$ret = $this->query($sql);
 		$response = array();
 		while($row = $ret->fetchArray(SQLITE3_NUM)){ 
