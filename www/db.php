@@ -13,11 +13,7 @@ class sensor_db extends SQLite3
 		$sql = "SELECT strftime('%s',timestamp), value FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') ORDER BY timestamp DESC";
 		$ret = $this->query($sql);
 		$response = array();
-		$first = true;
-		while($row = $ret->fetchArray(SQLITE3_NUM))
-		{
-			$response[] = $row;
-		}
+		while($response[] = $ret->fetchArray(SQLITE3_NUM)){ }
 
 		return json_encode($response);
 	}
