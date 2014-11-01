@@ -18,7 +18,6 @@ def read_serial_line(device):
 
 dev = serial.Serial(config.serial_device, baudrate=115200, timeout=3.0)
 
-update_interval = datetime.timedelta(seconds=10)
 next_update = datetime.datetime.now()
 dev.flushInput()
 
@@ -31,7 +30,7 @@ while True:
 	if recv == "\n": # here comes a new packet!
 		current_time = datetime.datetime.now()
 		if current_time > next_update:
-			next_update = current_time + update_interval
+			next_update = current_time + config.update_interval
 			done = False
 			while not done:
 				recv = read_serial_line(dev)
