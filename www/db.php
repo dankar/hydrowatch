@@ -10,13 +10,13 @@ class sensor_db extends SQLite3
 	function get_data($num, $table)
 	{
 		// TODO: better query
-		$sql = "SELECT value, timestamp FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') ORDER BY timestamp DESC";
+		$sql = "SELECT strftime('%s',timestamp), value FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') ORDER BY timestamp DESC";
 		$ret = $this->query($sql);
 		$response = array();
 		$first = true;
-		while($row = $ret->fetchArray(SQLITE3_ASSOC))
+		while($row = $ret->fetchArray(SQLITE3_NUM))
 		{
-			$response[] = array(strtotime($row["timestamp"]),$row["value"]);
+			$response[] = $row;
 		}
 
 		return json_encode($response);
