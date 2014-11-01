@@ -38,7 +38,7 @@ if(!$db)
                                 labelRotation: 45,
                                 labelFormat: Grapho.formats.time
                         },
-                        data: <? echo json_encode($db->get_day("water_temperature")); ?>
+                        data: <? echo $db->get_day("water_temperature"); ?>
                 });
 				graphs.addDataSet({
 					type:'line',
@@ -53,7 +53,7 @@ if(!$db)
 						max: 1024,
 						min: 100
 					},
-					data: <? echo json_encode($db->get_day("water_level")); ?>
+					data: <? echo $db->get_day("water_level"); ?>
 				});
 			</script>
 		</div>
