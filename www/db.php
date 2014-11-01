@@ -10,8 +10,10 @@ class sensor_db extends SQLite3
 		$cache_file = "cache/$num$table.cache";
 		$cache_life = 30;
 		if (!file_exists($cache_file) or (time() - filemtime($cache_file) >= $cache_life)){
+			echo "Not using cache";
 			return "";
 		} else {
+			echo "Using cache";
 			return file_get_contents($cache_file);
 		}
 	}
