@@ -20,9 +20,8 @@ class sensor_db extends SQLite3
 		file_put_contents("cache/$num$table.cache",$response);
 	}
 
-	function get_data($num, $table, $use_cache = true)
+	function get_data($num, $table, $use_cache = TRUE)
 	{
-		
 		$response = "";
 		if ($use_cache) {
 			$response = get_cache($num, $table);
