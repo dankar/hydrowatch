@@ -24,7 +24,7 @@ class sensor_db extends SQLite3
 	{
 		$response = "";
 		if ($use_cache) {
-			$response = get_cache($num, $table);
+			$response = $this->get_cache($num, $table);
 		}
 		if ($response == "") {
 			// TODO: better query
@@ -35,7 +35,7 @@ class sensor_db extends SQLite3
 				$response[] = $row;
 			}
 			$response = json_encode($response);
-			save_cache($num, $table, $response);
+			$this->save_cache($num, $table, $response);
 		}
 		return $response;
 	}
