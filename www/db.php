@@ -12,23 +12,14 @@ class sensor_db extends SQLite3
 		// TODO: better query
 		$sql = "SELECT value, timestamp FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') ORDER BY timestamp DESC";
 		$ret = $this->query($sql);
-		$response = "";
+		$response = array();
 		$first = true;
 		while($row = $ret->fetchArray(SQLITE3_ASSOC))
 		{
-			$data = "[" . strtotime($row["timestamp"]) . ", " . $row["value"] . "]";
-			if($first)
-			{
-				$response = $response . $data;
-				$first = false;
-			}
-			else
-			{
-				$response = $response . ", " . $data;
-			}
+			$response[] = array(strtotime($row["timestamp"]),$row["value"]);
 		}
 
-		return $response;
+		return json_encode($response);
 	}
 
 	function get_day($table)
