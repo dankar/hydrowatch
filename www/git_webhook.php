@@ -13,7 +13,5 @@ file_put_contents('../logs/github.txt', print_r($payload, TRUE), FILE_APPEND);
 if($payload->ref === 'refs/heads/master')
 {
 	$command = "cd ../ && git pull 2>&1 > /tmp/log";
-	file_put_contents('../logs/github.txt', "RUNNING GIT PULL FROM!\n" . $command, FILE_APPEND);
-
 	file_put_contents('../logs/github.txt', shell_exec($command), FILE_APPEND);
 }

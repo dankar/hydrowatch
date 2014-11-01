@@ -10,7 +10,7 @@ class sensor_db extends SQLite3
 	function get_data($num, $table)
 	{
 		// TODO: better query
-		$sql = "SELECT * FROM (SELECT value, timestamp FROM " .  $table . " ORDER BY timestamp DESC LIMIT " . $num . ") sub ORDER BY timestamp ASC";
+		$sql = "SELECT value, timestamp FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') ORDER BY timestamp DESC";
 		$ret = $this->query($sql);
 		$response = "";
 		$first = true;
@@ -33,12 +33,12 @@ class sensor_db extends SQLite3
 
 	function get_day($table)
 	{
-		return $this->get_data(8640, $table);
+		return $this->get_data(86400, $table);
 	}
 
 	function get_hours($table)
 	{
-		return $this->get_data(360, $table);
+		return $this->get_data(3600, $table);
 	}
 }
 
