@@ -49,6 +49,14 @@ class sensor_db extends SQLite3
 	{
 		return $this->get_data(3600, $table);
 	}
+
+	function get_current($table)
+	{
+		$sql = "SELECT value FROM " . $table . " ORDER BY timestamp DESC LIMIT 1";
+		$ret = $this->query($sql);
+		$row = $ret->fetchArray(SQLITE3_NUM);
+		return $row[0];
+	}
 }
 
 ?>
