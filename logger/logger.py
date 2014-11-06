@@ -36,7 +36,6 @@ while True:
 		dev.write("\n") 
 		while not done:
 			recv = read_serial_line(dev)
-			print recv
 			if recv == "\n":
 				done = True
 			else:
