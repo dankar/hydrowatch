@@ -1,0 +1,46 @@
+body {
+	background-color: #242526; 
+	color: #CACACA; 
+	font-size: 12px; 
+	font-family: 'Droid Sans';
+}	
+
+h2 {
+
+}
+
+.graph {
+	width: 400px;
+	height: 200px;
+	clear: both;
+}
+
+.panel_container {
+	width: 400px;
+	height: 400px;
+	margin: 50px;
+	float: left;
+}
+
+.left_panel, .right_panel {
+	width: 150px;
+	height: 100px;
+	background-color: #343536;
+	float: left;
+	margin: 10px;
+	display: table;
+}
+
+.current_text {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 30px;
+	font-family: 'Droid Sans';
+}
+
+.current_container {
+	display: table;
+	margin: 0 auto;
+}
+	
