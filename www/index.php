@@ -112,7 +112,7 @@ if(!$db)
 				</div>
 				<div class="right_panel">
 					<div class="current_text">
-						<p>N/A</p>
+						<p></p>
 					</div>
 				</div>
 			</div>
