@@ -1,0 +1,386 @@
+stdClass Object
+(
+    [ref] => refs/heads/master
+    [before] => abe64faf86a7e364cf2df8d9c3f2f40510dd5c01
+    [after] => 8f871ce26caf3efb6f89e72744bda98e14ab8088
+    [created] => 
+    [deleted] => 
+    [forced] => 
+    [base_ref] => 
+    [compare] => https://github.com/dankar/hydrowatch/compare/abe64faf86a7...8f871ce26caf
+    [commits] => Array
+        (
+            [0] => stdClass Object
+                (
+                    [id] => 8f871ce26caf3efb6f89e72744bda98e14ab8088
+                    [distinct] => 1
+                    [message] => Removed print
+                    [timestamp] => 2014-11-06T21:31:10+01:00
+                    [url] => https://github.com/dankar/hydrowatch/commit/8f871ce26caf3efb6f89e72744bda98e14ab8088
+                    [author] => stdClass Object
+                        (
+                            [name] => danne
+                            [email] => daniel.karling@gmail.com
+                            [username] => dankar
+                        )
+
+                    [committer] => stdClass Object
+                        (
+                            [name] => danne
+                            [email] => daniel.karling@gmail.com
+                            [username] => dankar
+                        )
+
+                    [added] => Array
+                        (
+                        )
+
+                    [removed] => Array
+                        (
+                        )
+
+                    [modified] => Array
+                        (
+                            [0] => logger/logger.py
+                        )
+
+                )
+
+        )
+
+    [head_commit] => stdClass Object
+        (
+            [id] => 8f871ce26caf3efb6f89e72744bda98e14ab8088
+            [distinct] => 1
+            [message] => Removed print
+            [timestamp] => 2014-11-06T21:31:10+01:00
+            [url] => https://github.com/dankar/hydrowatch/commit/8f871ce26caf3efb6f89e72744bda98e14ab8088
+            [author] => stdClass Object
+                (
+                    [name] => danne
+                    [email] => daniel.karling@gmail.com
+                    [username] => dankar
+                )
+
+            [committer] => stdClass Object
+                (
+                    [name] => danne
+                    [email] => daniel.karling@gmail.com
+                    [username] => dankar
+                )
+
+            [added] => Array
+                (
+                )
+
+            [removed] => Array
+                (
+                )
+
+            [modified] => Array
+                (
+                    [0] => logger/logger.py
+                )
+
+        )
+
+    [repository] => stdClass Object
+        (
+            [id] => 26023422
+            [name] => hydrowatch
+            [full_name] => dankar/hydrowatch
+            [owner] => stdClass Object
+                (
+                    [name] => dankar
+                    [email] => daniel.karling@gmail.com
+                )
+
+            [private] => 
+            [html_url] => https://github.com/dankar/hydrowatch
+            [description] => 
+            [fork] => 
+            [url] => https://github.com/dankar/hydrowatch
+            [forks_url] => https://api.github.com/repos/dankar/hydrowatch/forks
+            [keys_url] => https://api.github.com/repos/dankar/hydrowatch/keys{/key_id}
+            [collaborators_url] => https://api.github.com/repos/dankar/hydrowatch/collaborators{/collaborator}
+            [teams_url] => https://api.github.com/repos/dankar/hydrowatch/teams
+            [hooks_url] => https://api.github.com/repos/dankar/hydrowatch/hooks
+            [issue_events_url] => https://api.github.com/repos/dankar/hydrowatch/issues/events{/number}
+            [events_url] => https://api.github.com/repos/dankar/hydrowatch/events
+            [assignees_url] => https://api.github.com/repos/dankar/hydrowatch/assignees{/user}
+            [branches_url] => https://api.github.com/repos/dankar/hydrowatch/branches{/branch}
+            [tags_url] => https://api.github.com/repos/dankar/hydrowatch/tags
+            [blobs_url] => https://api.github.com/repos/dankar/hydrowatch/git/blobs{/sha}
+            [git_tags_url] => https://api.github.com/repos/dankar/hydrowatch/git/tags{/sha}
+            [git_refs_url] => https://api.github.com/repos/dankar/hydrowatch/git/refs{/sha}
+            [trees_url] => https://api.github.com/repos/dankar/hydrowatch/git/trees{/sha}
+            [statuses_url] => https://api.github.com/repos/dankar/hydrowatch/statuses/{sha}
+            [languages_url] => https://api.github.com/repos/dankar/hydrowatch/languages
+            [stargazers_url] => https://api.github.com/repos/dankar/hydrowatch/stargazers
+            [contributors_url] => https://api.github.com/repos/dankar/hydrowatch/contributors
+            [subscribers_url] => https://api.github.com/repos/dankar/hydrowatch/subscribers
+            [subscription_url] => https://api.github.com/repos/dankar/hydrowatch/subscription
+            [commits_url] => https://api.github.com/repos/dankar/hydrowatch/commits{/sha}
+            [git_commits_url] => https://api.github.com/repos/dankar/hydrowatch/git/commits{/sha}
+            [comments_url] => https://api.github.com/repos/dankar/hydrowatch/comments{/number}
+            [issue_comment_url] => https://api.github.com/repos/dankar/hydrowatch/issues/comments/{number}
+            [contents_url] => https://api.github.com/repos/dankar/hydrowatch/contents/{+path}
+            [compare_url] => https://api.github.com/repos/dankar/hydrowatch/compare/{base}...{head}
+            [merges_url] => https://api.github.com/repos/dankar/hydrowatch/merges
+            [archive_url] => https://api.github.com/repos/dankar/hydrowatch/{archive_format}{/ref}
+            [downloads_url] => https://api.github.com/repos/dankar/hydrowatch/downloads
+            [issues_url] => https://api.github.com/repos/dankar/hydrowatch/issues{/number}
+            [pulls_url] => https://api.github.com/repos/dankar/hydrowatch/pulls{/number}
+            [milestones_url] => https://api.github.com/repos/dankar/hydrowatch/milestones{/number}
+            [notifications_url] => https://api.github.com/repos/dankar/hydrowatch/notifications{?since,all,participating}
+            [labels_url] => https://api.github.com/repos/dankar/hydrowatch/labels{/name}
+            [releases_url] => https://api.github.com/repos/dankar/hydrowatch/releases{/id}
+            [created_at] => 1414772189
+            [updated_at] => 2014-10-31T19:50:24Z
+            [pushed_at] => 1415305890
+            [git_url] => git://github.com/dankar/hydrowatch.git
+            [ssh_url] => git@github.com:dankar/hydrowatch.git
+            [clone_url] => https://github.com/dankar/hydrowatch.git
+            [svn_url] => https://github.com/dankar/hydrowatch
+            [homepage] => 
+            [size] => 372
+            [stargazers_count] => 1
+            [watchers_count] => 1
+            [language] => JavaScript
+            [has_issues] => 1
+            [has_downloads] => 1
+            [has_wiki] => 1
+            [has_pages] => 
+            [forks_count] => 0
+            [mirror_url] => 
+            [open_issues_count] => 0
+            [forks] => 0
+            [open_issues] => 0
+            [watchers] => 1
+            [default_branch] => master
+            [stargazers] => 1
+            [master_branch] => master
+        )
+
+    [pusher] => stdClass Object
+        (
+            [name] => dankar
+            [email] => daniel.karling@gmail.com
+        )
+
+    [sender] => stdClass Object
+        (
+            [login] => dankar
+            [id] => 1545658
+            [avatar_url] => https://avatars.githubusercontent.com/u/1545658?v=2
+            [gravatar_id] => 
+            [url] => https://api.github.com/users/dankar
+            [html_url] => https://github.com/dankar
+            [followers_url] => https://api.github.com/users/dankar/followers
+            [following_url] => https://api.github.com/users/dankar/following{/other_user}
+            [gists_url] => https://api.github.com/users/dankar/gists{/gist_id}
+            [starred_url] => https://api.github.com/users/dankar/starred{/owner}{/repo}
+            [subscriptions_url] => https://api.github.com/users/dankar/subscriptions
+            [organizations_url] => https://api.github.com/users/dankar/orgs
+            [repos_url] => https://api.github.com/users/dankar/repos
+            [events_url] => https://api.github.com/users/dankar/events{/privacy}
+            [received_events_url] => https://api.github.com/users/dankar/received_events
+            [type] => User
+            [site_admin] => 
+        )
+
+)
+stdClass Object
+(
+    [ref] => refs/heads/master
+    [before] => 8f871ce26caf3efb6f89e72744bda98e14ab8088
+    [after] => 0ba160a5d2b85c6572862b7a7e176e73658cca86
+    [created] => 
+    [deleted] => 
+    [forced] => 
+    [base_ref] => 
+    [compare] => https://github.com/dankar/hydrowatch/compare/8f871ce26caf...0ba160a5d2b8
+    [commits] => Array
+        (
+            [0] => stdClass Object
+                (
+                    [id] => 0ba160a5d2b85c6572862b7a7e176e73658cca86
+                    [distinct] => 1
+                    [message] => Test
+                    [timestamp] => 2014-11-06T21:42:06+01:00
+                    [url] => https://github.com/dankar/hydrowatch/commit/0ba160a5d2b85c6572862b7a7e176e73658cca86
+                    [author] => stdClass Object
+                        (
+                            [name] => Daniel Karling
+                            [email] => daniel.karling@gmail.com
+                            [username] => dankar
+                        )
+
+                    [committer] => stdClass Object
+                        (
+                            [name] => Daniel Karling
+                            [email] => daniel.karling@gmail.com
+                            [username] => dankar
+                        )
+
+                    [added] => Array
+                        (
+                        )
+
+                    [removed] => Array
+                        (
+                        )
+
+                    [modified] => Array
+                        (
+                            [0] => www/index.php
+                        )
+
+                )
+
+        )
+
+    [head_commit] => stdClass Object
+        (
+            [id] => 0ba160a5d2b85c6572862b7a7e176e73658cca86
+            [distinct] => 1
+            [message] => Test
+            [timestamp] => 2014-11-06T21:42:06+01:00
+            [url] => https://github.com/dankar/hydrowatch/commit/0ba160a5d2b85c6572862b7a7e176e73658cca86
+            [author] => stdClass Object
+                (
+                    [name] => Daniel Karling
+                    [email] => daniel.karling@gmail.com
+                    [username] => dankar
+                )
+
+            [committer] => stdClass Object
+                (
+                    [name] => Daniel Karling
+                    [email] => daniel.karling@gmail.com
+                    [username] => dankar
+                )
+
+            [added] => Array
+                (
+                )
+
+            [removed] => Array
+                (
+                )
+
+            [modified] => Array
+                (
+                    [0] => www/index.php
+                )
+
+        )
+
+    [repository] => stdClass Object
+        (
+            [id] => 26023422
+            [name] => hydrowatch
+            [full_name] => dankar/hydrowatch
+            [owner] => stdClass Object
+                (
+                    [name] => dankar
+                    [email] => daniel.karling@gmail.com
+                )
+
+            [private] => 
+            [html_url] => https://github.com/dankar/hydrowatch
+            [description] => 
+            [fork] => 
+            [url] => https://github.com/dankar/hydrowatch
+            [forks_url] => https://api.github.com/repos/dankar/hydrowatch/forks
+            [keys_url] => https://api.github.com/repos/dankar/hydrowatch/keys{/key_id}
+            [collaborators_url] => https://api.github.com/repos/dankar/hydrowatch/collaborators{/collaborator}
+            [teams_url] => https://api.github.com/repos/dankar/hydrowatch/teams
+            [hooks_url] => https://api.github.com/repos/dankar/hydrowatch/hooks
+            [issue_events_url] => https://api.github.com/repos/dankar/hydrowatch/issues/events{/number}
+            [events_url] => https://api.github.com/repos/dankar/hydrowatch/events
+            [assignees_url] => https://api.github.com/repos/dankar/hydrowatch/assignees{/user}
+            [branches_url] => https://api.github.com/repos/dankar/hydrowatch/branches{/branch}
+            [tags_url] => https://api.github.com/repos/dankar/hydrowatch/tags
+            [blobs_url] => https://api.github.com/repos/dankar/hydrowatch/git/blobs{/sha}
+            [git_tags_url] => https://api.github.com/repos/dankar/hydrowatch/git/tags{/sha}
+            [git_refs_url] => https://api.github.com/repos/dankar/hydrowatch/git/refs{/sha}
+            [trees_url] => https://api.github.com/repos/dankar/hydrowatch/git/trees{/sha}
+            [statuses_url] => https://api.github.com/repos/dankar/hydrowatch/statuses/{sha}
+            [languages_url] => https://api.github.com/repos/dankar/hydrowatch/languages
+            [stargazers_url] => https://api.github.com/repos/dankar/hydrowatch/stargazers
+            [contributors_url] => https://api.github.com/repos/dankar/hydrowatch/contributors
+            [subscribers_url] => https://api.github.com/repos/dankar/hydrowatch/subscribers
+            [subscription_url] => https://api.github.com/repos/dankar/hydrowatch/subscription
+            [commits_url] => https://api.github.com/repos/dankar/hydrowatch/commits{/sha}
+            [git_commits_url] => https://api.github.com/repos/dankar/hydrowatch/git/commits{/sha}
+            [comments_url] => https://api.github.com/repos/dankar/hydrowatch/comments{/number}
+            [issue_comment_url] => https://api.github.com/repos/dankar/hydrowatch/issues/comments/{number}
+            [contents_url] => https://api.github.com/repos/dankar/hydrowatch/contents/{+path}
+            [compare_url] => https://api.github.com/repos/dankar/hydrowatch/compare/{base}...{head}
+            [merges_url] => https://api.github.com/repos/dankar/hydrowatch/merges
+            [archive_url] => https://api.github.com/repos/dankar/hydrowatch/{archive_format}{/ref}
+            [downloads_url] => https://api.github.com/repos/dankar/hydrowatch/downloads
+            [issues_url] => https://api.github.com/repos/dankar/hydrowatch/issues{/number}
+            [pulls_url] => https://api.github.com/repos/dankar/hydrowatch/pulls{/number}
+            [milestones_url] => https://api.github.com/repos/dankar/hydrowatch/milestones{/number}
+            [notifications_url] => https://api.github.com/repos/dankar/hydrowatch/notifications{?since,all,participating}
+            [labels_url] => https://api.github.com/repos/dankar/hydrowatch/labels{/name}
+            [releases_url] => https://api.github.com/repos/dankar/hydrowatch/releases{/id}
+            [created_at] => 1414772189
+            [updated_at] => 2014-10-31T19:50:24Z
+            [pushed_at] => 1415306546
+            [git_url] => git://github.com/dankar/hydrowatch.git
+            [ssh_url] => git@github.com:dankar/hydrowatch.git
+            [clone_url] => https://github.com/dankar/hydrowatch.git
+            [svn_url] => https://github.com/dankar/hydrowatch
+            [homepage] => 
+            [size] => 372
+            [stargazers_count] => 1
+            [watchers_count] => 1
+            [language] => JavaScript
+            [has_issues] => 1
+            [has_downloads] => 1
+            [has_wiki] => 1
+            [has_pages] => 
+            [forks_count] => 0
+            [mirror_url] => 
+            [open_issues_count] => 0
+            [forks] => 0
+            [open_issues] => 0
+            [watchers] => 1
+            [default_branch] => master
+            [stargazers] => 1
+            [master_branch] => master
+        )
+
+    [pusher] => stdClass Object
+        (
+            [name] => dankar
+            [email] => daniel.karling@gmail.com
+        )
+
+    [sender] => stdClass Object
+        (
+            [login] => dankar
+            [id] => 1545658
+            [avatar_url] => https://avatars.githubusercontent.com/u/1545658?v=2
+            [gravatar_id] => 
+            [url] => https://api.github.com/users/dankar
+            [html_url] => https://github.com/dankar
+            [followers_url] => https://api.github.com/users/dankar/followers
+            [following_url] => https://api.github.com/users/dankar/following{/other_user}
+            [gists_url] => https://api.github.com/users/dankar/gists{/gist_id}
+            [starred_url] => https://api.github.com/users/dankar/starred{/owner}{/repo}
+            [subscriptions_url] => https://api.github.com/users/dankar/subscriptions
+            [organizations_url] => https://api.github.com/users/dankar/orgs
+            [repos_url] => https://api.github.com/users/dankar/repos
+            [events_url] => https://api.github.com/users/dankar/events{/privacy}
+            [received_events_url] => https://api.github.com/users/dankar/received_events
+            [type] => User
+            [site_admin] => 
+        )
+
+)
+From https://github.com/dankar/hydrowatch
+   8f871ce..0ba160a  master     -> origin/master

@@ -1,35 +1,22 @@
-#include <DallasTemperature.h>
-#include <OneWire.h>
-
-#define ONE_WIRE_PIN 2
-#define WATER_LEVEL_PIN 0
-#define LIGHT_LEVEL_PIN 4
-
-OneWire one_wire(ONE_WIRE_PIN);
-DallasTemperature sensor(&one_wire);
+#include "pins.h"
+#include "command_parse.h"
+#include "commands.h"
 
 void setup(void)
 {
-  Serial.begin(115200);
-  sensor.begin();
+        Serial.begin(115200);
+        init_commands();
 }
 
 void loop(void)
 {
-  while(!Serial.available() > 0);
-  while(Serial.available() > 0) Serial.read();
-  float water_temperature, water_level, light_level;
-  sensor.requestTemperatures();
-  water_temperature = sensor.getTempCByIndex(0);
-  water_level = analogRead(WATER_LEVEL_PIN);
-  light_level = analogRead(LIGHT_LEVEL_PIN);
-  Serial.print("water_temperature: ");
-  Serial.print(water_temperature);
-  Serial.print("\n");
-  Serial.print("water_level: ");
-  Serial.print(water_level);
-  Serial.print("\n");
-  Serial.print("light_level: ");
-  Serial.print(light_level);
-  Serial.print("\n\n"); // Two newlines marks end of packet
+        int command_num = 0;
+        char *cmd[10];
+
+        command_num = serial_read_command(cmd);
+
+	command_func command_ptr = lookup_command(cmd[0]);
+
+	if(command_ptr)
+		command_ptr(cmd, command_num);
 }
