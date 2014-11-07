@@ -8,7 +8,9 @@ if(!$db)
 	echo $db->lastErrorMsg();
 }
 
-?><!DOCTYPE html>
+?>
+
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>Hydrowatch</title>
