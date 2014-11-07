@@ -63,3 +63,6 @@ build-cli/
 # db
 
 db/
+
+# logfile
+logs/github.txt
