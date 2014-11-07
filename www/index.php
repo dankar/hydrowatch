@@ -122,5 +122,8 @@ if(!$db)
 				<script>generate_light_graph('light_graph');</script>
 			</div>
 		</div>
+		<div id="states">
+			<? echo $db->get_states(); ?>
+		</div>
 	</body>
 </html>

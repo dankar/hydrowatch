@@ -39,6 +39,20 @@ class sensor_db extends SQLite3
 		}
 		return $response;
 	}
+	
+	function get_states()
+	{
+		$response = "";
+		
+		$sql = "SELECT name, value FROM states";
+		$ret = $this->query($sql);
+		
+		while($row = $ret->fetchArray(SQLITE3_NUM)){
+			$response += "<p>" . $row[0] . " = " . $row[1] . "</p>";
+		}
+		
+		return $response;
+	}
 
 	function get_day($table)
 	{
