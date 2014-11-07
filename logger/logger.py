@@ -66,7 +66,6 @@ def store_state(data):
 	try:
 		insert_state(name, value)
 	except sqlite3.OperationalError:
-		print "Woops, creating"
 		create_state_table()
 		insert_state(name, value)
 
