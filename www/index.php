@@ -123,6 +123,7 @@ if(!$db)
 			</div>
 		</div>
 		<div id="states">
+			<h2>States</h2>
 			<? echo $db->get_states(); ?>
 		</div>
 	</body>

@@ -48,7 +48,7 @@ class sensor_db extends SQLite3
 		$ret = $this->query($sql);
 		
 		while($row = $ret->fetchArray(SQLITE3_NUM)){
-			$response += "<p>" . $row[0] . " = " . $row[1] . "</p>";
+			$response .= "<p>" . $row[0] . " = " . $row[1] . "</p>";
 		}
 		
 		return $response;
