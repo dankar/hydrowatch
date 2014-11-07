@@ -65,4 +65,4 @@ build-cli/
 db/
 
 # logfile
-logs/github.txt
+github.txt
