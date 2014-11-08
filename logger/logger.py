@@ -10,10 +10,15 @@ db = sqlite3.connect('../db/sensors.db')
 
 create_log_value_table = 'CREATE TABLE %s (id INTEGER PRIMARY KEY, value INT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)'
 create_state_value_table = 'CREATE TABLE states (id INTEGER PRIMARY KEY, name TEXT, value INT)'
+
 store_state_value = 'INSERT INTO states (name, value) VALUES ("%s", "%s")'
 update_state_value = 'UPDATE states SET value = "%s" WHERE name = "%s"'
 get_state_value_exists = 'SELECT COUNT(*) FROM states WHERE name = "%s"'
 store_log_value = 'INSERT INTO %s (value) VALUES ("%s")'
+
+create_command_table_query = 'CREATE TABLE commands (command_string TEXT)'
+get_commands_query = 'SELECT * FROM commands'
+clear_command_table = 'DELETE FROM commands'
 
 def read_serial_line(device):
 	recv = ""
@@ -35,6 +40,9 @@ def create_state_table():
 	cur = db.cursor()
 	cur.execute(create_state_value_table)
 	db.commit()
+
+def create_command_table(cur):
+	cur.execute(create_command_table_query)
 
 def insert_state(name, value):
 	cur = db.cursor()
@@ -77,19 +85,51 @@ def parse_report(report):
 		if command == 'state':
 			store_state(data)
 
-def get_report(device):
+def parse_response(device):
 	done = False
-	device.write('get-report\n') 
 	report = []
-	while not done:
-		recv = read_serial_line(device)
-		if recv == '\n':
-			done = True
-		else:
-			report.append(recv)
+        while not done:
+                recv = read_serial_line(device)
+                if recv == '\n':
+                        done = True
+                else:
+                        report.append(recv)
 
-	if len(report) > 0:
-		parse_report(report)
+        if len(report) > 0:
+                parse_report(report)
+
+def get_report(device):
+	device.write('get-report\n') 
+	parse_response(device)
+
+def get_states(device):
+	device.write('get-states\n')
+	parse_response(device)
+
+def get_commands(cur):
+	return [row[0] for row in cur.execute(get_commands_query)]
+	
+
+def do_commands(device):
+	commands = []
+	anything_done = False
+	cur = db.cursor()
+	try:
+		commands = get_commands(cur)
+	except sqlite3.OperationalError:
+		create_command_table(cur)
+		commands = get_commands(cur)
+
+	for command in commands:
+		device.write(command)
+		device.write('\n')
+		anything_done = True
+
+	cur.execute(clear_command_table)
+	db.commit()
+
+	if anything_done:
+		get_states(device)
 
 dev = serial.Serial(config.serial_device, baudrate=115200, timeout=3.0)
 
@@ -105,4 +145,7 @@ while True:
 	if current_time > next_update:
 		get_report(dev);
 		next_update = current_time + config.update_interval
+	else:
+		do_commands(dev);
+
 	time.sleep(1)

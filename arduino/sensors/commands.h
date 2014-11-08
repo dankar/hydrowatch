@@ -6,8 +6,4 @@ extern command_t commands[];
 
 void init_commands();
 
-// Prints report from sensors on serial
-int get_report(char *args[], int arg_num);
-
-
 #endif

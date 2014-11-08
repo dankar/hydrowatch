@@ -6,26 +6,29 @@
 
 int num_commands = 0;
 
-command_t commands[] =
-{"get-report", &get_report};
 
 OneWire one_wire(ONE_WIRE_PIN);
 DallasTemperature sensor(&one_wire);
 
 static int is_inited = 0;
 
-void init_commands()
+static int light_setting = 0;
+
+int print_states()
 {
-	num_commands = sizeof(commands)/sizeof(command_t);
+	Serial.print("state light_setting=");
+        Serial.print(light_setting);
+        Serial.print("\n");
+	return 1;
 }
 
-int get_report(char *args[], int arg_num)
+int print_reports()
 {
 	if(!is_inited)
-	{
-		sensor.begin();
-		is_inited = 1;
-	}
+        {
+                sensor.begin();
+                is_inited = 1;
+        }
 
         float water_temperature, water_level, light_level;
         sensor.requestTemperatures();
@@ -45,9 +48,54 @@ int get_report(char *args[], int arg_num)
         Serial.print(light_level);
         Serial.print("\n");
 
-        Serial.print("state light_setting=2");
+        Serial.print("state light_setting=");
+        Serial.print(light_setting);
         Serial.print("\n");
+	return 1;
+}
 
+int get_states(char *argts[], int arg_num)
+{
+	print_states();
+	Serial.print("\n");
+}
+
+int get_report(char *args[], int arg_num)
+{
+
+	print_reports();
+	print_states();
         Serial.print("\n"); // Two newlines marks end of packet
         return 1;
 }
+
+int set_light(char *args[], int arg_num)
+{
+	if(arg_num != 2)
+	{
+		return 0;
+	}
+
+	if(strcmp(args[1], "0") == 0)
+	{
+		light_setting = 0;
+	}
+	else if(strcmp(args[1], "1") == 0)
+	{
+		light_setting = 1;
+	}
+	return 1;
+}
+
+command_t commands[] =
+{
+{"get-report", &get_report},
+{"get-states", &get_states},
+{"set-light", &set_light}
+};
+
+void init_commands()
+{
+	num_commands = sizeof(commands)/sizeof(command_t);
+}
+

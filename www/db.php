@@ -1,9 +1,9 @@
 <?php
-class sensor_db extends SQLite3
+class sensor_db extends PDO
 {
 	function __construct()
 	{
-		$this->open('../db/sensors.db');
+		parent::__construct('sqlite:../db/sensors.db');
 	}
 
 	function get_cache($num, $table) {
@@ -28,30 +28,39 @@ class sensor_db extends SQLite3
 		}
 		if ($response == "") {
 			// TODO: better query
-			$sql = "SELECT 0+strftime('%s',timestamp), value FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') ORDER BY timestamp DESC";
-			$ret = $this->query($sql);
+			$sql = $this->prepare("SELECT strftime('%s',timestamp) as ts, value FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') ORDER BY timestamp DESC");
+			$sql->execute();
 			$response = array();
-			while($row = $ret->fetchArray(SQLITE3_NUM)){ 
-				$response[] = $row;
+			while($row = $sql->fetch(PDO::FETCH_NUM)){
+				$response[] = [intval($row[0]), floatval($row[1])];
 			}
 			$response = json_encode($response);
 			$this->save_cache($num, $table, $response);
 		}
 		return $response;
 	}
-	
+
 	function get_states()
 	{
 		$response = "";
-		
-		$sql = "SELECT name, value FROM states";
-		$ret = $this->query($sql);
-		
-		while($row = $ret->fetchArray(SQLITE3_NUM)){
+
+		$sql = $this->prepare("SELECT name, value FROM states");
+		$sql->execute();
+
+		while($row = $sql->fetch()){
 			$response .= "<p>" . $row[0] . " = " . $row[1] . "</p>";
 		}
-		
+
 		return $response;
+	}
+
+	function post_command($cmd)
+	{
+		$sql = $this->prepare("INSERT INTO commands (command_string) VALUES (:command)");
+		$sql->bindParam(':command', $cmd);
+		$sql->execute();
+
+		print $this->errorInfo()[2];
 	}
 
 	function get_day($table)
@@ -66,9 +75,9 @@ class sensor_db extends SQLite3
 
 	function get_current($table)
 	{
-		$sql = "SELECT value FROM " . $table . " ORDER BY timestamp DESC LIMIT 1";
-		$ret = $this->query($sql);
-		$row = $ret->fetchArray(SQLITE3_NUM);
+		$sql = $this->prepare("SELECT value FROM " . $table . " ORDER BY timestamp DESC LIMIT 1");
+		$sql->execute();
+		$row = $sql->fetch();
 		return $row[0];
 	}
 }
