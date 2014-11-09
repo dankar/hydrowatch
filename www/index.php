@@ -181,6 +181,7 @@ if($_GET)
 			<form action="#">
                                 <label><input type="radio" name="light" onclick="load_url('?cmd=set-light 1');">Light on</label>
                                 <label><input type="radio" name="light" onclick="load_url('?cmd=set-light 0');">Light off</label>
+				<label><input type="radio" name="light" onclick="load_url('?cmd=set-light 2');">Light auto</label>
 			</form>
 		</div>
 	</body>

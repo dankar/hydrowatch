@@ -12,13 +12,26 @@ DallasTemperature sensor(&one_wire);
 
 static int is_inited = 0;
 
-static float light_setting = 0;
+#define LIGHT_OFF 0
+#define LIGHT_ON 1
+#define LIGHT_AUTO 2
+
+static float current_light = 0.0;
+static float light_value = 0.0;
+static int light_setting = LIGHT_AUTO;
 
 int print_states()
 {
 	Serial.print("state light_setting=");
         Serial.print(light_setting);
+	Serial.print("\n");
+	Serial.print("state light_value=");
+	Serial.print(light_value);
         Serial.print("\n");
+	Serial.print("state current_light=");
+	Serial.print(current_light);
+	Serial.print("\n");
+
 	return 1;
 }
 
@@ -71,6 +84,7 @@ int get_report(char *args[], int arg_num)
 
 void set_light_pwm(float pwm)
 {
+	current_light = pwm;
 	analogWrite(LIGHT_PWM_PIN, pwm*255);
 }
 
@@ -81,8 +95,29 @@ int set_light(char *args[], int arg_num)
 		return 0;
 	}
 
-	light_setting = atof(args[1]);
-	set_light_pwm(light_setting);
+	light_setting = atoi(args[1]);
+
+	if(light_setting == LIGHT_AUTO)
+		set_light_pwm(light_value);
+	else if(light_setting == LIGHT_ON)
+		set_light_pwm(1.0);
+	else if(light_setting == LIGHT_OFF)
+		set_light_pwm(0.0);
+
+	return 1;
+}
+
+int set_light_value(char *args[], int arg_num)
+{
+	if(arg_num != 2)
+	{
+		return 0;
+	}
+
+	light_value = atof(args[1]);
+
+	if(light_setting == LIGHT_AUTO)
+		set_light_pwm(light_value);
 
 	return 1;
 }
@@ -91,7 +126,8 @@ command_t commands[] =
 {
 {"get-report", &get_report},
 {"get-states", &get_states},
-{"set-light", &set_light}
+{"set-light", &set_light},
+{"set-light-value", &set_light_value}
 };
 
 void init_commands()

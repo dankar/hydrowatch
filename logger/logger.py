@@ -133,26 +133,27 @@ def do_commands(device):
 		get_states(device)
 
 def update_light(device):
-	seconds_in_a_day = 86400.0
+	day_secs = 86400.0
+	hour_secs = 3600.0
 	now = datetime.datetime.now()
 	midnight = datetime.datetime.combine(now.date(), datetime.time(0))
 	delta = now - midnight
 	light = 0.0
-	
-	seconds_from_midday = delta.seconds - (seconds_in_a_day / 2)
-	print "Secs from mid: ", seconds_from_midday
 
-	normalized = seconds_from_midday / (seconds_in_a_day / 2)
-	print "Normalized: ", normalized
+	current_hour = delta.seconds / 3600.0 - 12
 
-	if math.fabs(normalized) > 0.5:
-		print "Is down"
-		light = 0.0
+	if math.fabs(current_hour) < config.light_hours / 2:
+		light = config.light_max
+	elif math.fabs(current_hour) < (config.light_hours/2) + config.light_fade_hours:
+		sign = current_hour / current_hour
+		fade_amount = (math.fabs(current_hour) - (config.light_hours/2)) * sign
+		fade_amount = fade_amount / config.light_fade_hours
+
+		light = (math.cos(fade_amount * math.pi) + 1.0) / 2.0 * config.light_max
 	else:
-		light = math.cos(normalized * 2.0 * math.pi)
-		print "Is up: ", light
-
-	device.write("set-light " + str(light) + "\n");
+		light = 0.0
+	
+	device.write("set-light-value " + str(light) + "\n");
 
 	
 
