@@ -5,6 +5,7 @@ import serial
 import sqlite3
 import datetime
 import time
+import math
 
 db = sqlite3.connect('../db/sensors.db')
 
@@ -131,6 +132,30 @@ def do_commands(device):
 	if anything_done:
 		get_states(device)
 
+def update_light(device):
+	seconds_in_a_day = 86400.0
+	now = datetime.datetime.now()
+	midnight = datetime.datetime.combine(now.date(), datetime.time(0))
+	delta = now - midnight
+	light = 0.0
+	
+	seconds_from_midday = delta.seconds - (seconds_in_a_day / 2)
+	print "Secs from mid: ", seconds_from_midday
+
+	normalized = seconds_from_midday / (seconds_in_a_day / 2)
+	print "Normalized: ", normalized
+
+	if math.fabs(normalized) > 0.5:
+		print "Is down"
+		light = 0.0
+	else:
+		light = math.cos(normalized * 2.0 * math.pi)
+		print "Is up: ", light
+
+	device.write("set-light " + str(light) + "\n");
+
+	
+
 dev = serial.Serial(config.serial_device, baudrate=115200, timeout=3.0)
 
 next_update = datetime.datetime.now()
@@ -143,9 +168,10 @@ time.sleep(5)
 while True:
 	current_time = datetime.datetime.now()
 	if current_time > next_update:
-		get_report(dev);
+		update_light(dev)
+		get_report(dev)
 		next_update = current_time + config.update_interval
 	else:
-		do_commands(dev);
+		do_commands(dev)
 
 	time.sleep(1)

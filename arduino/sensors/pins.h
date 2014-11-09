@@ -4,5 +4,6 @@
 #define ONE_WIRE_PIN 2
 #define WATER_LEVEL_PIN 0
 #define LIGHT_LEVEL_PIN 4
+#define LIGHT_PWM_PIN 5
 
 #endif

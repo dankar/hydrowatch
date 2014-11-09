@@ -12,7 +12,7 @@ DallasTemperature sensor(&one_wire);
 
 static int is_inited = 0;
 
-static int light_setting = 0;
+static float light_setting = 0;
 
 int print_states()
 {
@@ -69,6 +69,11 @@ int get_report(char *args[], int arg_num)
         return 1;
 }
 
+void set_light_pwm(float pwm)
+{
+	analogWrite(LIGHT_PWM_PIN, pwm*255);
+}
+
 int set_light(char *args[], int arg_num)
 {
 	if(arg_num != 2)
@@ -76,14 +81,9 @@ int set_light(char *args[], int arg_num)
 		return 0;
 	}
 
-	if(strcmp(args[1], "0") == 0)
-	{
-		light_setting = 0;
-	}
-	else if(strcmp(args[1], "1") == 0)
-	{
-		light_setting = 1;
-	}
+	light_setting = atof(args[1]);
+	set_light_pwm(light_setting);
+
 	return 1;
 }
 
@@ -97,5 +97,6 @@ command_t commands[] =
 void init_commands()
 {
 	num_commands = sizeof(commands)/sizeof(command_t);
+	set_light_pwm(0.0);
 }
 
