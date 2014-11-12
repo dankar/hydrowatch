@@ -39,7 +39,7 @@ if($_GET)
 		                                name: "Temperature (C)",
 		                                nameFont: '13px Droid Sans', 
 										min: 17,
-										max: 25
+										max: 27
 		                        },
 		                        x: {
 	                        		showGridLines: true,
@@ -60,8 +60,8 @@ if($_GET)
 						name: "Level",
 						nameFont: '13px Droid Sans',
 						labels: true,
-						max: 800,
-						min: 200
+						max: 1024,
+						min: 0
 					},
 							data: <? echo $db->get_day("water_level"); ?>
 				});

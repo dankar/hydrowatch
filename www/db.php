@@ -28,7 +28,7 @@ class sensor_db extends PDO
 		}
 		if ($response == "") {
 			// TODO: better query
-			$sql = $this->prepare("SELECT strftime('%s',timestamp) as ts, value FROM " .  $table . " WHERE timestamp > date('now','localtime','-" . $num . " seconds') ORDER BY timestamp DESC");
+			$sql = $this->prepare("SELECT strftime('%s',timestamp) as ts, value FROM " .  $table . " WHERE timestamp > datetime('now','localtime','-" . $num . " seconds') ORDER BY timestamp DESC");
 			$sql->execute();
 			$response = array();
 			while($row = $sql->fetch(PDO::FETCH_NUM)){
