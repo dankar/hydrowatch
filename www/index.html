@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hydrowatch</title>
+
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+
+		<script type="text/javascript" src="js/vendor/jquery-2.1.1.min.js"></script>
+		<script src="js/vendor/grapho.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="js/graphs.js"></script>
+
+		<script>
+			var iosocket;
+
+			$(function(){
+				iosocket = io.connect();
+				iosocket.on('connect', function(){
+					iosocket.on('message', function(message){
+
+						if(message.msg == 'states')
+						{
+							$('#states_list').html(message.data.data.reduce(function(prev, cur){ return prev + '<p>' + cur[0] + ': ' + cur[1] + '</p>'; }));
+							console.log(message.data.data);
+						}
+						if(message.msg == 'history')
+						{
+							var graph = "";
+							if(message.data.name == 'water_temperature' || message.data.name == 'water_level')
+								graph = 'water_graph';
+							else if(message.data.name == 'light_level')
+								graph = 'light_graph';
+								
+							update_graph(graph, message.data.name, message.data.data);
+						}
+						if(message.msg == 'current')
+						{
+							$('#' + message.data.name).html(message.data.data);
+						}
+					});
+				});
+			});
+
+			function set_light(value)
+			{
+				iosocket.emit('message', {msg: 'set-light', data: value});
+			}
+
+		</script>
+	</head>
+	<body>
+		<div class="panel_container">
+			<div class="current_container">
+				<div class="left_panel">
+					<div id="water_level" class="current_text">
+					</div>
+				</div>
+				<div class="right_panel">
+					<div id="water_temperature" class="current_text">
+					</div>
+				</div>
+			</div>
+			<div id="water_graph" class="graph">
+				<script>create_graph('water_graph');</script>
+			</div>
+		</div>
+
+		<div class="panel_container">
+			<div class="current_container">
+				<div class="left_panel">
+					<div id="light_level" class="current_text">
+					</div>
+				</div>
+				<div class="right_panel">
+					<div class="current_text">
+						<p></p>
+					</div>
+				</div>
+			</div>
+			<div id="light_graph" class="graph">
+				<script>create_graph('light_graph');</script>
+			</div>
+		</div>
+		<div id="states">
+			<h2>States</h2>
+			<div id="states_list"></div>
+			<form action="#">
+                                <label><input type="radio" name="light" onclick="set_light(1);">Light on</label>
+                                <label><input type="radio" name="light" onclick="set_light(0);">Light off</label>
+				<label><input type="radio" name="light" onclick="set_light(2);">Light auto</label>
+			</form>
+		</div>
+	</body>
+</html>

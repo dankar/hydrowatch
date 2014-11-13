@@ -1,0 +1,13 @@
+{
+	"server": {
+		"port": 8080,
+		"mimetypes": {
+			"html": "text/html",
+			"js": "text/javascript",
+			"css": "text/css"
+		}
+	},
+	"database": {
+		"file": "db/sensors.db"
+	}
+}
