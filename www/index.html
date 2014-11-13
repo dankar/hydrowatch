@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Hydrowatch</title>
+
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+
+		<script type="text/javascript" src="js/vendor/jquery-2.1.1.min.js"></script>
+		<script src="js/vendor/grapho.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+
+		<script>
+			var waterGraph;
+			var water_temperature_history;
+			var water_level_history;
+			function update_water_temperature_graph(div_name, temperature)
+			{
+				if(water_temperature_history !== undefined){
+					waterGraph.removeDataset(water_temperature_history);
+				}
+
+		                water_temperature_history = waterGraph.addDataSet({
+		                        type:'line',
+		                        strokeStyle: '#F0F066',
+		                        y: {
+		                                scaleStyle: '#F0F066',
+		                                showGridLines: true,
+		                                labels: true,
+		                                name: "Temperature (C)",
+		                                nameFont: '13px Droid Sans', 
+										min: 17,
+										max: 27
+		                        },
+		                        x: {
+	                        		showGridLines: true,
+	                        		gridStyle: '#221010',
+		                                labels: true,
+		                                labelRotation: 45,
+		                                labelFormat: Grapho.formats.time
+		                        },
+		                        data: temperature
+		                });
+		
+			}
+
+			function update_water_level_graph(div_name, level)
+			{
+				if(water_level_history !== undefined){
+					waterGraph.removeDataset(water_level_history);
+				}
+
+		                water_level_history = waterGraph.addDataSet({
+					type:'line',
+					strokeStyle: '#6666F0',
+					y: {
+			                        axis: 2,
+						scaleStyle: '#6666F0',
+						showScale: true,
+						name: "Level",
+						nameFont: '13px Droid Sans',
+						labels: true,
+						max: 1024,
+						min: 0
+					},
+							data: level
+				});
+		
+			}
+			function generate_light_graph(div_name, data)
+			{
+				var graphs = new Grapho({place: div_name});
+                                graphs.addDataSet({
+                                        type:'line',
+                                        strokeStyle: '#F0F066',
+                                        y: {
+                                                scaleStyle: '#F0F066',
+                                                showGridLines: true,
+                                                labels: true,
+                                                name: "Light",
+                                                nameFont: '13px Droid Sans',
+                                                //                              min: 17,
+                                                //                              max: 25
+                                        },
+                                        x: {
+                                                showGridLines: true,
+                                                gridStyle: '#221010',
+                                                labels: true,
+                                                labelRotation: 45,
+                                                labelFormat: Grapho.formats.time
+                                        },
+                                        data: data
+                                });
+			}
+			var iosocket;
+
+			$(function(){
+				iosocket = io.connect();
+				iosocket.on('connect', function(){
+					iosocket.on('message', function(message){
+
+						if(message.msg == 'history')
+						{
+							if(message.data.name == 'water_temperature')
+							{
+								update_water_temperature_graph('water_graph', message.data.data);
+							}
+							if(message.data.name == 'water_level')
+							{
+								update_water_level_graph('water_graph', message.data.data);
+							}
+						}
+						if(message.msg == 'current')
+						{
+							$('#' + message.data.name).html(message.data.data);
+						}
+					});
+				});
+			});
+
+			function set_light(value)
+			{
+				iosocket.emit('message', {msg: 'set-light', data: value});
+			}
+
+		</script>
+	</head>
+	<body>
+		<div class="panel_container">
+			<div class="current_container">
+				<div class="left_panel">
+					<div id="water_level" class="current_text">
+					</div>
+				</div>
+				<div class="right_panel">
+					<div id="water_temperature" class="current_text">
+					</div>
+				</div>
+			</div>
+			<div id="water_graph" class="graph">
+			<script>waterGraph = Grapho({place: 'water_graph'});</script>
+			</div>
+		</div>
+
+		<div class="panel_container">
+			<div class="current_container">
+				<div class="left_panel">
+					<div id="light_level" class="current_text">
+					</div>
+				</div>
+				<div class="right_panel">
+					<div class="current_text">
+						<p></p>
+					</div>
+				</div>
+			</div>
+			<div id="light_graph" class="graph">
+			</div>
+		</div>
+		<div id="states">
+			<h2>States</h2>
+			<form action="#">
+                                <label><input type="radio" name="light" onclick="set_light(1);">Light on</label>
+                                <label><input type="radio" name="light" onclick="set_light(0);">Light off</label>
+				<label><input type="radio" name="light" onclick="set_light(2);">Light auto</label>
+			</form>
+		</div>
+	</body>
+</html>

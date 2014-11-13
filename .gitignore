@@ -60,3 +60,5 @@ cache/
 # arduino build-dir
 build-cli/
 
+node_modules/
+
