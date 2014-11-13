@@ -98,6 +98,9 @@ function parse_message(msg)
 	if(msg.msg == 'set-light')
 	{
 		post_command('set-light ' + msg.data);
+		// We wait a bit before getting the new state after sending the command.
+		// This should be done with intelligence instead of waiting a set time.
+		setTimeout(get_states, 1000);
 	}
 }
 
@@ -129,4 +132,3 @@ function updater()
 }
 
 updater();
-	

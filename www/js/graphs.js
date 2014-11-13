@@ -112,6 +112,6 @@ function update_graph(graph, dataset, data)
 	
 	if(repeat)
 	{
-		setTimeout(function(){update_graph(graph, dataset, data);}, 0.1);
+		setTimeout(function(){update_graph(graph, dataset, data);}, 1);
 	}
 }
