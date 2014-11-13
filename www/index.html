@@ -21,7 +21,6 @@
 						if(message.msg == 'states')
 						{
 							$('#states_list').html(message.data.data.reduce(function(prev, cur){ return prev + '<p>' + cur[0] + ': ' + cur[1] + '</p>'; }));
-							console.log(message.data.data);
 						}
 						if(message.msg == 'history')
 						{
