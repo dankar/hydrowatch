@@ -2,6 +2,8 @@
 var datasets = {}
 var graphs = {}
 
+var graph_scale = {}
+
 var water_temperature_graph = {
 					type:'line',
 					strokeStyle: '#F0F066',
@@ -49,8 +51,8 @@ var light_level_graph = {
 									labels: true,
 									name: "Light",
 									nameFont: '13px Droid Sans',
-									//                              min: 17,
-									//                              max: 25
+									min: 0,
+									max: 1024
 							},
 							x: {
 									showGridLines: true,
@@ -69,6 +71,9 @@ function create_graph(place)
 
 function update_graph(graph, dataset, data)
 {
+	var repeat = false;
+	var graph_add;
+	
 	if(graphs[graph] == undefined)
 	{
 		console.log("No such graph " + graph);
@@ -80,8 +85,6 @@ function update_graph(graph, dataset, data)
 		graphs[graph].removeDataset(datasets[dataset]);
 	}
 	
-	var graph_add;
-	
 	if(dataset == 'water_temperature')
 		graph_add = water_temperature_graph;
 	else if(dataset == 'water_level')
@@ -91,5 +94,24 @@ function update_graph(graph, dataset, data)
 		
 	graph_add.data = data;
 	
+	if(graph_scale[dataset] == undefined)
+		graph_scale[dataset] = 0.0;
+	
+	if(graph_scale[dataset] < 1.0)
+	{
+		graph_add.data = graph_add.data.map(function(data){ 
+							var scaled = graph_add.y.min + (data[1] - graph_add.y.min) * graph_scale[dataset];
+							return [ data[0],  scaled ]; 
+							});
+		graph_scale[dataset] += 0.05;
+		repeat = true;
+	}
+		
+	
 	datasets[dataset] = graphs[graph].addDataSet(graph_add);
+	
+	if(repeat)
+	{
+		setTimeout(function(){update_graph(graph, dataset, data);}, 0.1);
+	}
 }
