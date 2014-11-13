@@ -5,6 +5,8 @@ var datasource = require('./datasource.js');
 
 var io;
 
+var datacache = {};
+
 function get_history(table)
 {
 	var sql = "SELECT strftime('%s',timestamp) as ts, value FROM " + table + " WHERE timestamp > datetime('now','localtime','-86400 seconds') ORDER BY timestamp DESC";
@@ -14,7 +16,7 @@ function get_history(table)
 			
 			if(!err)
 			{
-				io.sockets.emit('message', {
+				datacache[table + '_history'] = {
 						msg: 'history', 
 						data: 
 							{ 
@@ -24,8 +26,8 @@ function get_history(table)
 										return [row.ts, row.value];
 									}) 
 								}
-							}
-						);
+							};
+				io.sockets.emit('message', datacache[table + '_history']);
 			}
 		});
 }
@@ -38,7 +40,10 @@ function get_current(table)
 	datasource.db.each(sql,
 		function(err, row){
 			if(!err)
-				io.sockets.emit('message', {msg: 'current', data: { name: table, data: row.value}});
+			{
+				datacache[table + '_current'] = {msg: 'current', data: { name: table, data: row.value}};
+				io.sockets.emit('message', datacache[table + '_current']);
+			}
 		});
 }
 
@@ -50,7 +55,7 @@ function get_states()
 		function(err, data){
 			if(!err)
 			{
-				io.sockets.emit('message', {
+				datacache['states'] = {
 						msg: 'states',
 						data:
 							{
@@ -60,9 +65,9 @@ function get_states()
 										return [row.name, row.value];
 									})
 								}
-						}
-
-						);
+						};
+						
+				io.sockets.emit('message', datacache['states']);
 			}
 		});
 }
@@ -96,10 +101,21 @@ function parse_message(msg)
 	}
 }
 
+function send_cache(socket)
+{
+	for(var key in datacache)
+	{
+		if(datacache.hasOwnProperty(key))
+		{
+			socket.emit('message', datacache[key]);
+		}
+	}
+}
+
 datasource.Init(function(){
 	io = socketio.listen(server).set('log level', 0);
 	io.on('connection', function(socket){
-			send_data(socket);
+			send_cache(socket);
 			socket.on('message', parse_message);
 			socket.on('error', function(err){ console.log(err); });
 	});
