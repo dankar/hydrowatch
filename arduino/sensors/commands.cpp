@@ -3,6 +3,7 @@
 #include "pins.h"
 #include "command_parse.h"
 #include "commands.h"
+#include "tds.h"
 
 int num_commands = 0;
 
@@ -36,7 +37,6 @@ int print_states()
 	Serial.print("state current_light=");
 	Serial.print(current_light);
 	Serial.print("\n");
-	
 	Serial.print("state motor_setting=");
 	Serial.print(motor_setting);
 	Serial.print("\n");
@@ -53,10 +53,13 @@ int print_reports()
         }
 
         float water_temperature, water_level, light_level;
+	unsigned long tds_level;
         sensor.requestTemperatures();
         water_temperature = sensor.getTempCByIndex(0);
         water_level = analogRead(WATER_LEVEL_PIN);
         light_level = analogRead(LIGHT_LEVEL_PIN);
+	tds_level = get_tds();
+
 
         Serial.print("log_value water_temperature=");
         Serial.print(water_temperature);
@@ -69,10 +72,10 @@ int print_reports()
         Serial.print("log_value light_level=");
         Serial.print(light_level);
         Serial.print("\n");
-		
-		Serial.print("log_value tds_level=");
-		Serial.print(get_tds());
-		Serial.print("\n");
+
+	Serial.print("log_value tds_level=");
+	Serial.print(tds_level);
+	Serial.print("\n");
 
         Serial.print("state light_setting=");
         Serial.print(light_setting);
@@ -150,7 +153,7 @@ command_t commands[] =
 {"get-report", &get_report},
 {"get-states", &get_states},
 {"set-light", &set_light},
-{"set-light-value", &set_light_value}
+{"set-light-value", &set_light_value},
 {"set-motor", &set_motor}
 };
 

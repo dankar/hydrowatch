@@ -78,10 +78,12 @@ function send_data(socket)
 	get_current('water_temperature');
 	get_current('water_level');
 	get_current('light_level');
+	get_current('tds_level');
 
 	get_history('water_temperature');
 	get_history('water_level');
 	get_history('light_level');
+	get_history('tds_level');
 	
 	get_states();
 }
@@ -100,7 +102,12 @@ function parse_message(msg)
 		post_command('set-light ' + msg.data);
 		// We wait a bit before getting the new state after sending the command.
 		// This should be done with intelligence instead of waiting a set time.
-		setTimeout(get_states, 1000);
+		setTimeout(get_states, 2000);
+	}
+	if(msg.msg == 'set-motor')
+	{
+		post_command('set-motor ' + msg.data);
+		setTimeout(get_states, 2000);
 	}
 }
 

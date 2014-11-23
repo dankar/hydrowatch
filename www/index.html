@@ -48,9 +48,11 @@
 									}
 									$('#light_setting').html(text);
 								}
-								if(name == 'motor-setting')
+								if(name == 'motor_setting')
 								{
-									
+									var text = "";
+									var motor_text = ['off', 'on', 'silent'];
+									$('#motor_setting').html(motor_text[data]);
 								}
 							}
 						}
@@ -61,7 +63,8 @@
 								graph = 'water_graph';
 							else if(message.data.name == 'light_level')
 								graph = 'light_graph';
-								
+							else if(message.data.name == 'tds_level')
+								graph = 'tds_graph';
 							update_graph(graph, message.data.name, message.data.data);
 						}
 						if(message.msg == 'current')
@@ -120,7 +123,7 @@
 				<div id="light_setting" class="status_text">on</div>
 			</div>
 			<div id="light_status" class="status_box" style="float: left">
-				<div class="status_text">Motor</div>
+				<div class="status_text">Pump</div>
 				<div id="motor_setting" class="status_text">silent</div>
 			</div>
 			<div id="form" style="clear:both">
@@ -129,6 +132,11 @@
                                 <label><input type="radio" name="light" onclick="set_light(0);">Light off</label>
 				<label><input type="radio" name="light" onclick="set_light(2);">Light auto</label>
 			</form>
+			<form action="#">
+                                <label><input type="radio" name="motor" onclick="set_motor(1);">Pump on</label>
+                                <label><input type="radio" name="motor" onclick="set_motor(0);">Pump off</label>
+                                <label><input type="radio" name="motor" onclick="set_motor(2);">Pump silent</label>
+                        </form>
 			</div>
 		</div>
 		

@@ -62,6 +62,26 @@ var light_level_graph = {
 							data: []
 					};
 
+var tds_level_graph = {
+		 type:'line',
+                                                        strokeStyle: '#F0F066',
+                                                        y: {
+                                                                        scaleStyle: '#F0F066',
+                                                                        showGridLines: true,
+                                                                        labels: true,
+                                                                        name: "TDS",
+                                                                        nameFont: '13px Droid Sans',
+                                                        },
+                                                        x: {
+                                                                        showGridLines: true,
+                                                                        gridStyle: '#221010',
+                                                                        labels: true,
+                                                                        labelRotation: 45,
+                                                                        labelFormat: Grapho.formats.time
+                                                        },
+                                                        data: []
+                                        };
+
 function create_graph(place)
 {
 	graphs[place] = new Grapho({place: place});
@@ -89,6 +109,8 @@ function update_graph(graph, dataset, data)
 		graph_add = water_level_graph;
 	else if(dataset == 'light_level')
 		graph_add = light_level_graph;
+	else if(dataset == 'tds_level')
+		graph_add = tds_level_graph;
 		
 	graph_add.data = data;
 	datasets[dataset] = graphs[graph].addDataSet(graph_add);

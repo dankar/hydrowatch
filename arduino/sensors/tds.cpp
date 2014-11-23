@@ -11,6 +11,8 @@ volatile unsigned long last2_trig_time = 0;
 volatile byte send_data = 0;
 byte power_on = 0;
 
+unsigned long start_time = 0;
+
 void isr()
 {
   if(!triggered)
@@ -32,6 +34,8 @@ void cycle_power()
 unsigned long get_tds()
 {
   unsigned long freq = 0;
+
+  start_time = millis();
   FreqCounter::f_comp = 10;
   pinMode(TDS_INT_PIN, INPUT);
   pinMode(TDS_FREQ_PIN, INPUT);
@@ -41,11 +45,16 @@ unsigned long get_tds()
   digitalWrite(TDS_INT_PIN, LOW);
   digitalWrite(TDS_FREQ_PIN, LOW);
   attachInterrupt(1, isr, FALLING); 
-  
+ 
   cycle_power();
-  
+ 
   while(true)
   {
+    if(millis() - start_time > 1000) // Timeout after 1s
+    {
+	cycle_power();
+	return 0;
+    }
     if(triggered)
     {
       FreqCounter::start(32);
@@ -69,7 +78,7 @@ unsigned long get_tds()
       last1_trig_time = trig_time;
       trig_time = 0;
       interrupts();
-       
+
       if(send_data)
       {
         send_data = 0;
@@ -77,7 +86,7 @@ unsigned long get_tds()
         cycle_power();
         return freq;
       }
-        
+
       triggered = 0;
     }
   }
