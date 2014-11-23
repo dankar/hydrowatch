@@ -7,6 +7,7 @@
 #define LIGHT_LEVEL_PIN 4
 #define TDS_FREQ_PIN 5
 #define LIGHT_PWM_PIN 10
+#define PUMP_PWM_PIN 11
 #define TDS_POWER_PIN 12
 
 // Analog
