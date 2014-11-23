@@ -44,23 +44,32 @@ $(function(){
 		});
 	});
 });
+
+function set_buttons(arr, value)
+{
+	for(var i = 0; i < arr.length; i++)
+        {
+                if(i == value)
+                {
+                        arr[i].attr("class", "button_on");
+                }
+                else
+                {
+                        arr[i].attr("class", "button_off");
+                }
+        }
+}
+
 function update_light(value)
 {
 	var buttons = [$('#light_off'), $('#light_on'), $('#light_auto')];
-	$('#light_off').css({"background-color":"#000000"});
-	$('#light_on').css({"background-color":"#000000"});
-	$('#light_auto').css({"background-color":"#000000"});
-	
-	buttons[value].css({"background-color":"#ffffff"});
+	set_buttons(buttons, value);
 }
 
 function update_pump(value)
 {
 	var buttons = [$('#pump_off'), $('#pump_on')];
-	$('#pump_off').css({"background-color":"#000000"});
-	$('#pump_on').css({"background-color":"#000000"});
-
-	buttons[value].css({"background-color":"#ffffff"});
+	set_buttons(buttons, value);
 }
 
 function set_light(value)
