@@ -2,8 +2,6 @@
 var datasets = {}
 var graphs = {}
 
-var graph_scale = {}
-
 var water_temperature_graph = {
 					type:'line',
 					strokeStyle: '#F0F066',
@@ -93,25 +91,5 @@ function update_graph(graph, dataset, data)
 		graph_add = light_level_graph;
 		
 	graph_add.data = data;
-	
-	if(graph_scale[dataset] == undefined)
-		graph_scale[dataset] = 0.0;
-	
-	if(graph_scale[dataset] < 1.0)
-	{
-		graph_add.data = graph_add.data.map(function(data){ 
-							var scaled = graph_add.y.min + (data[1] - graph_add.y.min) * graph_scale[dataset];
-							return [ data[0],  scaled ]; 
-							});
-		graph_scale[dataset] += 0.05;
-		repeat = true;
-	}
-		
-	
 	datasets[dataset] = graphs[graph].addDataSet(graph_add);
-	
-	if(repeat)
-	{
-		setTimeout(function(){update_graph(graph, dataset, data);}, 1);
-	}
 }

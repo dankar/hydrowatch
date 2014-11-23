@@ -16,9 +16,14 @@ static int is_inited = 0;
 #define LIGHT_ON 1
 #define LIGHT_AUTO 2
 
+#define MOTOR_OFF 0
+#define MOTOR_ON 1
+#define MOTOR_SILENT 2
+
 static float current_light = 0.0;
 static float light_value = 0.0;
 static int light_setting = LIGHT_AUTO;
+static int motor_setting = MOTOR_ON;
 
 int print_states()
 {
@@ -30,6 +35,10 @@ int print_states()
         Serial.print("\n");
 	Serial.print("state current_light=");
 	Serial.print(current_light);
+	Serial.print("\n");
+	
+	Serial.print("state motor_setting=");
+	Serial.print(motor_setting);
 	Serial.print("\n");
 
 	return 1;
@@ -60,6 +69,10 @@ int print_reports()
         Serial.print("log_value light_level=");
         Serial.print(light_level);
         Serial.print("\n");
+		
+		Serial.print("log_value tds_level=");
+		Serial.print(get_tds());
+		Serial.print("\n");
 
         Serial.print("state light_setting=");
         Serial.print(light_setting);
@@ -122,12 +135,23 @@ int set_light_value(char *args[], int arg_num)
 	return 1;
 }
 
+int set_motor(char *args[], int arg_num)
+{
+	if(arg_num != 2)
+		return 0;
+		
+	motor_setting = atoi(args[1]);
+	
+	return 1;
+}
+
 command_t commands[] =
 {
 {"get-report", &get_report},
 {"get-states", &get_states},
 {"set-light", &set_light},
 {"set-light-value", &set_light_value}
+{"set-motor", &set_motor}
 };
 
 void init_commands()
