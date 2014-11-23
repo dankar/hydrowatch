@@ -8,89 +8,9 @@
 		<script type="text/javascript" src="js/vendor/jquery-2.1.1.min.js"></script>
 		<script src="js/vendor/grapho.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
+		<script src="js/hydrowatch.js"></script>
 		<script src="js/graphs.js"></script>
 
-		<script>
-			var iosocket;
-
-			$(function(){
-				iosocket = io.connect();
-				iosocket.on('connect', function(){
-					iosocket.on('message', function(message){
-
-						if(message.msg == 'states')
-						{
-							for(var key in message.data.data)
-							{
-								var name = message.data.data[key][0];
-								var data = message.data.data[key][1];
-								if(name == 'current_light')
-								{
-									var color = Math.floor(data * 255);
-									$('#light_status').css({"background-color": "rgba(" + [color, color, color, 255].join(",") + ")"});
-								}
-								if(name == 'light_setting')
-								{
-									update_light(data);
-								}
-								if(name == 'motor_setting')
-								{
-									update_pump(data);								
-								}
-							}
-						}
-						if(message.msg == 'history')
-						{
-							var graph = "";
-							if(message.data.name == 'water_temperature' || message.data.name == 'water_level')
-								graph = 'water_graph';
-							else if(message.data.name == 'light_level')
-								graph = 'light_graph';
-							else if(message.data.name == 'tds_level')
-								graph = 'tds_graph';
-							update_graph(graph, message.data.name, message.data.data);
-						}
-						if(message.msg == 'current')
-						{
-							$('#' + message.data.name).html(message.data.data);
-						}
-					});
-				});
-			});
-
-			function update_light(value)
-			{
-				var buttons = [$('#light_off'), $('#light_on'), $('#light_auto')];
-				$('#light_off').css({"background-color":"#000000"});
-				$('#light_on').css({"background-color":"#000000"});
-				$('#light_auto').css({"background-color":"#000000"});
-
-				buttons[value].css({"background-color":"#ffffff"});
-
-			}
-
-			function update_pump(value)
-			{
-				var buttons = [$('#pump_off'), $('#pump_on')];
-				$('#pump_off').css({"background-color":"#000000"});
-				$('#pump_on').css({"background-color":"#000000"});
-
-				buttons[value].css({"background-color":"#ffffff"});
-			}
-
-			function set_light(value)
-			{
-				iosocket.emit('message', {msg: 'set-light', data: value});
-				update_light(value);
-			}
-			
-			function set_motor(value)
-			{
-				iosocket.emit('message', {msg: 'set-motor', data: value});
-				update_pump(value);
-			}
-
-		</script>
 	</head>
 	<body>
 		<div class="panel_container">
@@ -120,19 +40,6 @@
 				<script>create_graph('light_graph');</script>
 			</div>
 		</div>
-		<div class="panel_container" id="states">
-			<div>
-				<p>Light</p>
-				<div id="light_off" class="button" onclick="set_light(0);"><div class="button_text">OFF</div></div>
-				<div id="light_on" class="button" onclick="set_light(1);"><div class="button_text">ON</div></div>
-				<div id="light_auto" class="button" onclick="set_light(2);"><div class="button_text">AUTO</div></div>
-			</div>
-			<div style="clear:both">
-				<p>Pump</p>
-				<div id="pump_off" class="button" onclick="set_motor(0);"><div class="button_text">OFF</div></div>
-				<div id="pump_on" class="button" onclick="set_motor(1);"><div class="button_text">ON</div></div>
-			</div>
-		</div>
 		
 		<div class="panel_container" style="clear:both">
 			<div class="current_container">
@@ -143,6 +50,19 @@
 			</div>
 			<div id="tds_graph" class="graph">
 				<script>create_graph('tds_graph');</script>
+			</div>
+		</div>
+		<div class="panel_container" id="states">
+			<div>
+				<h2>Light</h2>
+				<div id="light_off" class="button" onclick="set_light(0);"><div class="button_text">OFF</div></div>
+				<div id="light_on" class="button" onclick="set_light(1);"><div class="button_text">ON</div></div>
+				<div id="light_auto" class="button" onclick="set_light(2);"><div class="button_text">AUTO</div></div>
+			</div>
+			<div style="clear:both">
+				<h2>Pump</h2>
+				<div id="pump_off" class="button" onclick="set_motor(0);"><div class="button_text">OFF</div></div>
+				<div id="pump_on" class="button" onclick="set_motor(1);"><div class="button_text">ON</div></div>
 			</div>
 		</div>
 		
