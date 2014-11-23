@@ -31,28 +31,11 @@
 								}
 								if(name == 'light_setting')
 								{
-									var text = "";
-									switch(data)
-									{
-									case 0:
-										text = "off";
-										break;
-									case 1:
-										text = "on";
-										break;
-									case 2:
-										text = "auto";
-										break;
-									default:
-										text = "n/a";
-									}
-									$('#light_setting').html(text);
+									update_light(data);
 								}
 								if(name == 'motor_setting')
 								{
-									var text = "";
-									var motor_text = ['off', 'on', 'silent'];
-									$('#motor_setting').html(motor_text[data]);
+									update_pump(data);								
 								}
 							}
 						}
@@ -75,14 +58,36 @@
 				});
 			});
 
+			function update_light(value)
+			{
+				var buttons = [$('#light_off'), $('#light_on'), $('#light_auto')];
+				$('#light_off').css({"background-color":"#000000"});
+				$('#light_on').css({"background-color":"#000000"});
+				$('#light_auto').css({"background-color":"#000000"});
+
+				buttons[value].css({"background-color":"#ffffff"});
+
+			}
+
+			function update_pump(value)
+			{
+				var buttons = [$('#pump_off'), $('#pump_on')];
+				$('#pump_off').css({"background-color":"#000000"});
+				$('#pump_on').css({"background-color":"#000000"});
+
+				buttons[value].css({"background-color":"#ffffff"});
+			}
+
 			function set_light(value)
 			{
 				iosocket.emit('message', {msg: 'set-light', data: value});
+				update_light(value);
 			}
 			
 			function set_motor(value)
 			{
 				iosocket.emit('message', {msg: 'set-motor', data: value});
+				update_pump(value);
 			}
 
 		</script>
@@ -116,26 +121,16 @@
 			</div>
 		</div>
 		<div class="panel_container" id="states">
-			<h2>States</h2>
-			<div id="states_list"></div>
-			<div id="light_status" class="status_box" style="float: left">
-				<div class="status_text">Light</div>
-				<div id="light_setting" class="status_text">on</div>
+			<div>
+				<p>Light</p>
+				<div id="light_off" class="button" onclick="set_light(0);"><div class="button_text">OFF</div></div>
+				<div id="light_on" class="button" onclick="set_light(1);"><div class="button_text">ON</div></div>
+				<div id="light_auto" class="button" onclick="set_light(2);"><div class="button_text">AUTO</div></div>
 			</div>
-			<div id="light_status" class="status_box" style="float: left">
-				<div class="status_text">Pump</div>
-				<div id="motor_setting" class="status_text">silent</div>
-			</div>
-			<div id="form" style="clear:both">
-			<form action="#">
-                                <label><input type="radio" name="light" onclick="set_light(1);">Light on</label>
-                                <label><input type="radio" name="light" onclick="set_light(0);">Light off</label>
-				<label><input type="radio" name="light" onclick="set_light(2);">Light auto</label>
-			</form>
-			<form action="#">
-                                <label><input type="radio" name="motor" onclick="set_motor(1);">Pump on</label>
-                                <label><input type="radio" name="motor" onclick="set_motor(0);">Pump off</label>
-                        </form>
+			<div style="clear:both">
+				<p>Pump</p>
+				<div id="pump_off" class="button" onclick="set_motor(0);"><div class="button_text">OFF</div></div>
+				<div id="pump_on" class="button" onclick="set_motor(1);"><div class="button_text">ON</div></div>
 			</div>
 		</div>
 		
