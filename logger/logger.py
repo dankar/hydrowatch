@@ -122,7 +122,6 @@ def do_commands(device):
 		commands = get_commands(cur)
 
 	for command in commands:
-		print('Sending ', command);
 		device.write(command)
 		device.write('\n')
 		anything_done = True

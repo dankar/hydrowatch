@@ -44,6 +44,53 @@ int print_states()
 	return 1;
 }
 
+void sort(unsigned long *buffer, size_t n)
+{
+	bool swapped = true;
+
+	while(swapped)
+	{
+		swapped = false;
+		for(int i = 1; i < n; i++)
+		{
+			if(buffer[i-1] > buffer[i])
+			{
+				unsigned long temp = buffer[i];
+				buffer[i] = buffer[i-1];
+				buffer[i-1] = temp;
+				swapped = true;
+			}
+		}
+		n--;
+	}
+}
+
+#define NUM_AVERAGES 10
+
+
+// Get 10 measurements of TDS, throw away the two highest and two lowest
+// Return the average of the remaining samples.
+unsigned long get_average_tds()
+{
+	unsigned long buffer[10];
+	unsigned long sum = 0;
+
+	for(int i = 0; i < NUM_AVERAGES; i++)
+	{
+		buffer[i] = get_tds();
+		delay(100);
+	}
+
+	sort(buffer, NUM_AVERAGES);
+
+	for(int i = 2; i < NUM_AVERAGES-2; i++)
+	{
+		sum += buffer[i];
+	}
+
+	return sum/(NUM_AVERAGES-4);
+}
+
 int print_reports()
 {
 	if(!is_inited)
@@ -58,7 +105,7 @@ int print_reports()
         water_temperature = sensor.getTempCByIndex(0);
         water_level = analogRead(WATER_LEVEL_PIN);
         light_level = analogRead(LIGHT_LEVEL_PIN);
-	tds_level = get_tds();
+	tds_level = get_average_tds();
 
 
         Serial.print("log_value water_temperature=");
