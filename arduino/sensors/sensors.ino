@@ -22,6 +22,10 @@ void setup(void)
 
 	TCCR2B = TCCR2B & 0b11111000 | 0x02;
 
+	pinMode(PUMP_PWM_PIN, OUTPUT);
+	pinMode(LIGHT_PWM_PIN_1, OUTPUT);
+	pinMode(LIGHT_PWM_PIN_2, OUTPUT);
+	pinMode(TDS_POWER_PIN, OUTPUT);
 }
 
 void loop(void)
