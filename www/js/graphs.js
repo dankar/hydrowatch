@@ -71,6 +71,8 @@ var tds_level_graph = {
                                                                         labels: true,
                                                                         name: "TDS",
                                                                         nameFont: '13px Droid Sans',
+									min: 1200,
+									max: 7000,
                                                         },
                                                         x: {
                                                                         showGridLines: true,
