@@ -149,8 +149,8 @@ void set_light_pwm(float pwm)
 	current_light = pwm;
 
 	// 255-(pwm*255) as the led drivers are inverted
-	analogWrite(LIGHT_PWM_PIN_1, 255-pwm*255);
-	analogWrite(LIGHT_PWM_PIN_2, 255-pwm*255);
+	analogWrite(LIGHT_PWM_PIN_1, pwm*255);
+	analogWrite(LIGHT_PWM_PIN_2, pwm*255);
 }
 
 int set_light(char *args[], int arg_num)
@@ -182,7 +182,7 @@ int set_light_value(char *args[], int arg_num)
 	light_value = atof(args[1]);
 
 	if(light_setting == LIGHT_AUTO)
-		set_light_pwm(light_value);
+		set_light_pwm(1-light_value);
 
 	return 1;
 }
