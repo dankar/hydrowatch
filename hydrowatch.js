@@ -2,6 +2,13 @@ var socketio = require('socket.io');
 var server = require('./server.js');
 var config = require('./config.json');
 var datasource = require('./datasource.js');
+var domain = require('domain');
+
+d = domain.create();
+
+d.on('error', function(err) {
+  console.error('Global error catched: ' + err);
+});
 
 var io;
 
@@ -10,66 +17,79 @@ var datacache = {};
 function get_history(table)
 {
 	var sql = "SELECT strftime('%s',timestamp) as ts, value FROM " + table + " WHERE timestamp > datetime('now','localtime','-86400 seconds') ORDER BY timestamp DESC";
-
-	datasource.db.all(sql,
-		function(err, data){
-			
-			if(!err)
-			{
-				datacache[table + '_history'] = {
-						msg: 'history', 
-						data: 
-							{ 
-								name: table, 
-								data: data.map(
-									function(row){ 
-										return [row.ts, row.value];
-									}) 
-								}
-							};
-				io.sockets.emit('message', datacache[table + '_history']);
+	try {
+		datasource.db.all(sql,
+			function(err, data){
+				
+				if(!err)
+				{
+					datacache[table + '_history'] = {
+							msg: 'history', 
+							data: 
+								{ 
+									name: table, 
+									data: data.map(
+										function(row){ 
+											return [row.ts, row.value];
+										}) 
+									}
+								};
+					io.sockets.emit('message', datacache[table + '_history']);
+				}
 			}
-		});
+		);
+	} catch (e) {
+		console.log("Datasource error");
+	}
 }
 
 function get_current(table)
 {
 	var sql = "SELECT value as value FROM " + table + " ORDER BY timestamp DESC LIMIT 1";
 
-
-	datasource.db.each(sql,
-		function(err, row){
-			if(!err)
-			{
-				datacache[table + '_current'] = {msg: 'current', data: { name: table, data: row.value}};
-				io.sockets.emit('message', datacache[table + '_current']);
+	try {
+		datasource.db.each(sql,
+			function(err, row){
+				if(!err)
+				{
+					datacache[table + '_current'] = {msg: 'current', data: { name: table, data: row.value}};
+					io.sockets.emit('message', datacache[table + '_current']);
+				}
 			}
-		});
+		);
+	} catch (e) {
+		console.log("Datasource error");
+	}
 }
 
 function get_states()
 {
 	var sql = "SELECT name, value FROM states";
 	
-	datasource.db.all(sql,
-		function(err, data){
-			if(!err)
-			{
-				datacache['states'] = {
-						msg: 'states',
-						data:
-							{
-								name: 'states',
-								data: data.map(
-									function(row){
-										return [row.name, row.value];
-									})
-								}
-						};
-						
-				io.sockets.emit('message', datacache['states']);
+	try {
+		datasource.db.all(sql,
+			function(err, data){
+				if(!err)
+				{
+					datacache['states'] = {
+							msg: 'states',
+							data:
+								{
+									name: 'states',
+									data: data.map(
+										function(row){
+											return [row.name, row.value];
+										})
+									}
+							};
+							
+					io.sockets.emit('message', datacache['states']);
+				}
 			}
-		});
+		);
+	} catch (e) {
+		console.log("Datasource error");
+	}
 }
 						
 
@@ -91,7 +111,11 @@ function send_data(socket)
 function post_command(cmd)
 {
 	var sql = "INSERT INTO commands (command_string) VALUES ('" + cmd + "')";
-	datasource.db.run(sql);
+	try {
+		datasource.db.run(sql);
+	} catch (e) {
+		console.log("Could not write to database, command ignored");
+	}
 }
 	
 
@@ -139,3 +163,4 @@ function updater()
 }
 
 updater();
+

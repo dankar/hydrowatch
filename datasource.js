@@ -9,7 +9,7 @@ module.exports = {
 		var exists = fs.existsSync(db_file);
 		db = new sqlite3.Database(db_file);
 		this.db = db;
-
+		db.configure("busyTimeout", 10000);
 		callback();
 	}
 }

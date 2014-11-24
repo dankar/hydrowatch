@@ -49,16 +49,22 @@ def insert_state(name, value):
 	cur = db.cursor()
 	cur.execute(get_state_value_exists % name)
 	row = cur.fetchone()
-	if row[0] == 0:
-		cur.execute(store_state_value % (name, value))
-	else:
-		cur.execute(update_state_value % (value, name))
-	db.commit()
+	try:
+		if row[0] == 0:
+			cur.execute(store_state_value % (name, value))
+		else:
+			cur.execute(update_state_value % (value, name))
+		db.commit()
+	except:
+		print("Could not use database, state not written.")
 
 def insert_log_row(table, value):
 	cur = db.cursor()
-        cur.execute(store_log_value % (table, value))
-        db.commit()
+	try:
+	        cur.execute(store_log_value % (table, value))
+	        db.commit()
+	except:
+		print("Could not use database, log not written.")
 
 def store_log_row(data):
 	(table, value) = tuple(data.split('='))
@@ -124,9 +130,11 @@ def do_commands(device):
 		device.write(str(command))
 		device.write('\n')
 		anything_done = True
-
-	cur.execute(clear_command_table)
-	db.commit()
+	try:
+		cur.execute(clear_command_table)
+		db.commit()
+	except:
+		print("Could not use database, command table not cleared.")
 
 	if anything_done:
 		get_states(device)

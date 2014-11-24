@@ -68,7 +68,7 @@ function update_light(value)
 
 function update_pump(value)
 {
-	var buttons = [$('#pump_off'), $('#pump_on')];
+	var buttons = [$('#pump_off'), $('#pump_on'), $('#pump_silent')];
 	set_buttons(buttons, value);
 }
 

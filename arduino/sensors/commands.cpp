@@ -147,8 +147,10 @@ int get_report(char *args[], int arg_num)
 void set_light_pwm(float pwm)
 {
 	current_light = pwm;
-	analogWrite(LIGHT_PWM_PIN_1, pwm*255);
-	analogWrite(LIGHT_PWM_PIN_2, pwm*255);
+
+	// 255-(pwm*255) as the led drivers are inverted
+	analogWrite(LIGHT_PWM_PIN_1, 255-pwm*255);
+	analogWrite(LIGHT_PWM_PIN_2, 255-pwm*255);
 }
 
 int set_light(char *args[], int arg_num)
@@ -198,11 +200,11 @@ int set_motor(char *args[], int arg_num)
 	}
 	if(motor_setting == MOTOR_ON)
 	{
-		analogWrite(PUMP_PWM_PIN, 255);
+		analogWrite(PUMP_PWM_PIN, 128);
 	}
 	if(motor_setting == MOTOR_SILENT)
 	{
-		analogWrite(PUMP_PWM_PIN, 127);
+		analogWrite(PUMP_PWM_PIN, 64);
 	}
 	return 1;
 }

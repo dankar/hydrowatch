@@ -6,6 +6,22 @@ void setup(void)
 {
         Serial.begin(115200);
         init_commands();
+
+	/* Set PWM on pins 11 and 3 to different frequency
+	 	Setting 	Divisor 	Frequency
+		0x01 	 	1  		31372.55
+		0x02 	 	8 	 	3921.16
+		0x03  		32  		980.39
+		0x04 	 	64 	 	490.20   <--DEFAULT
+		0x05 	 	128  		245.10
+		0x06  		256  		122.55
+		0x07 	 	1024  		30.64
+	
+		TCCR2B = TCCR2B & 0b11111000 | <setting>;
+	*/
+
+	TCCR2B = TCCR2B & 0b11111000 | 0x02;
+
 }
 
 void loop(void)
