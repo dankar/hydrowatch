@@ -92,7 +92,6 @@ unsigned long get_average_tds()
 
 int print_reports()
 {
-	
 	if(!is_inited)
         {
                 sensor.begin();
@@ -105,7 +104,7 @@ int print_reports()
         water_temperature = sensor.getTempCByIndex(0);
         water_level = analogRead(WATER_LEVEL_PIN);
         light_level = analogRead(LIGHT_LEVEL_PIN);
-	tds_level = get_average_tds();
+	tds_level = 0; //get_average_tds(); // Getting tds temporarily disabled since it fucks timer2 up
 
         Serial.print("log_value water_temperature=");
         Serial.print(water_temperature);
