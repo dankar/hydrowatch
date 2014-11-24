@@ -23,7 +23,7 @@ static int is_inited = 0;
 static float current_light = 0.0;
 static float light_value = 0.0;
 static int light_setting = LIGHT_AUTO;
-static int motor_setting = MOTOR_ON;
+static int motor_setting = MOTOR_OFF;
 
 int print_states()
 {
