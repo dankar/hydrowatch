@@ -7,7 +7,6 @@
 
 int num_commands = 0;
 
-
 OneWire one_wire(ONE_WIRE_PIN);
 DallasTemperature sensor(&one_wire);
 
@@ -93,20 +92,20 @@ unsigned long get_average_tds()
 
 int print_reports()
 {
+	
 	if(!is_inited)
         {
                 sensor.begin();
                 is_inited = 1;
         }
 
-        float water_temperature, water_level, light_level;
+	float water_temperature, water_level, light_level;
 	unsigned long tds_level;
         sensor.requestTemperatures();
         water_temperature = sensor.getTempCByIndex(0);
         water_level = analogRead(WATER_LEVEL_PIN);
         light_level = analogRead(LIGHT_LEVEL_PIN);
 	tds_level = get_average_tds();
-
 
         Serial.print("log_value water_temperature=");
         Serial.print(water_temperature);
@@ -148,7 +147,8 @@ int get_report(char *args[], int arg_num)
 void set_light_pwm(float pwm)
 {
 	current_light = pwm;
-	analogWrite(LIGHT_PWM_PIN, pwm*255);
+	analogWrite(LIGHT_PWM_PIN_1, pwm*255);
+	analogWrite(LIGHT_PWM_PIN_2, pwm*255);
 }
 
 int set_light(char *args[], int arg_num)

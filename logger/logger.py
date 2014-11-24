@@ -110,7 +110,6 @@ def get_states(device):
 def get_commands(cur):
 	return [row[0] for row in cur.execute(get_commands_query)]
 	
-
 def do_commands(device):
 	commands = []
 	anything_done = False
@@ -122,7 +121,7 @@ def do_commands(device):
 		commands = get_commands(cur)
 
 	for command in commands:
-		device.write(command)
+		device.write(str(command))
 		device.write('\n')
 		anything_done = True
 
