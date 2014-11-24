@@ -191,9 +191,9 @@ int set_motor(char *args[], int arg_num)
 {
 	if(arg_num != 2)
 		return 0;
-		
+
 	motor_setting = atoi(args[1]);
-	
+
 	if(motor_setting == MOTOR_OFF)
 	{
 		analogWrite(PUMP_PWM_PIN, 0);
