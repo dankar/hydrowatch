@@ -64,7 +64,6 @@ h2 {
 	border-style: solid;
 	border-width: 1px;
 	border-color: #ffffff;
-	background-color: #ffffff;
 	margin: 0px;
 	margin-bottom: 10px;
 	display: table;
@@ -72,12 +71,12 @@ h2 {
 
 
 .button_on {
-	background_color: #ffffff;
+	background-color: #ffffff;
 }
 
 
 .button_off {
-	background_color: #000000;
+	background-color: #000000;
 }
 
 
