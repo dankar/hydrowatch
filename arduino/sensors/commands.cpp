@@ -163,11 +163,11 @@ int set_light(char *args[], int arg_num)
 	light_setting = atoi(args[1]);
 
 	if(light_setting == LIGHT_AUTO)
-		set_light_pwm(light_value);
+		set_light_pwm(1.0-light_value);
 	else if(light_setting == LIGHT_ON)
-		set_light_pwm(1.0);
-	else if(light_setting == LIGHT_OFF)
 		set_light_pwm(0.0);
+	else if(light_setting == LIGHT_OFF)
+		set_light_pwm(1.0);
 
 	return 1;
 }
@@ -200,7 +200,7 @@ int set_motor(char *args[], int arg_num)
 	}
 	if(motor_setting == MOTOR_ON)
 	{
-		analogWrite(PUMP_PWM_PIN, 128);
+		analogWrite(PUMP_PWM_PIN, 196);
 	}
 	if(motor_setting == MOTOR_SILENT)
 	{

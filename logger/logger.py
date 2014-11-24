@@ -49,22 +49,16 @@ def insert_state(name, value):
 	cur = db.cursor()
 	cur.execute(get_state_value_exists % name)
 	row = cur.fetchone()
-	try:
-		if row[0] == 0:
-			cur.execute(store_state_value % (name, value))
-		else:
-			cur.execute(update_state_value % (value, name))
-		db.commit()
-	except:
-		print("Could not use database, state not written.")
+	if row[0] == 0:
+		cur.execute(store_state_value % (name, value))
+	else:
+		cur.execute(update_state_value % (value, name))
+	db.commit()
 
 def insert_log_row(table, value):
 	cur = db.cursor()
-	try:
-	        cur.execute(store_log_value % (table, value))
-	        db.commit()
-	except:
-		print("Could not use database, log not written.")
+        cur.execute(store_log_value % (table, value))
+        db.commit()
 
 def store_log_row(data):
 	(table, value) = tuple(data.split('='))
@@ -130,11 +124,9 @@ def do_commands(device):
 		device.write(str(command))
 		device.write('\n')
 		anything_done = True
-	try:
-		cur.execute(clear_command_table)
-		db.commit()
-	except:
-		print("Could not use database, command table not cleared.")
+
+	cur.execute(clear_command_table)
+	db.commit()
 
 	if anything_done:
 		get_states(device)
@@ -155,11 +147,10 @@ def update_light(device):
 		sign = current_hour / current_hour
 		fade_amount = (math.fabs(current_hour) - (config.light_hours/2)) * sign
 		fade_amount = fade_amount / config.light_fade_hours
-
 		light = (math.cos(fade_amount * math.pi) + 1.0) / 2.0 * config.light_max
 	else:
 		light = 0.0
-	
+
 	device.write("set-light-value " + str(light) + "\n");
 
 	
@@ -168,7 +159,6 @@ dev = serial.Serial(config.serial_device, baudrate=115200, timeout=3.0)
 
 next_update = datetime.datetime.now()
 dev.flushInput()
-
 
 # Wait for the Arduino to boot...
 time.sleep(5)
