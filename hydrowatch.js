@@ -1,14 +1,8 @@
-var socketio = require('socket.io');
-var server = require('./server.js');
-var config = require('./config.json');
-var datasource = require('./datasource.js');
-var domain = require('domain');
-
-d = domain.create();
-
-d.on('error', function(err) {
-  console.error('Global error catched: ' + err);
-});
+var socketio = require('socket.io'),
+	server = require('./server.js'),
+	config = require('./config.json'),
+	datasource = require('./datasource.js'),
+	logger = require('./logger.js');
 
 var io;
 
@@ -147,11 +141,16 @@ function send_cache(socket)
 }
 
 datasource.Init(function(){
+
 	io = socketio.listen(server).set('log level', 0);
 	io.on('connection', function(socket){
-			send_cache(socket);
-			socket.on('message', parse_message);
-			socket.on('error', function(err){ console.log(err); });
+		send_cache(socket);
+		socket.on('message', parse_message);
+		socket.on('error', function(err){ console.log(err); });
+	});
+
+	logger.Init(function() {
+		console.log("Logger initiated");
 	});
 
 });

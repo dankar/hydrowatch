@@ -9,5 +9,12 @@
 	},
 	"database": {
 		"file": "db/sensors.db"
+	},
+	"logger": {
+		"serial_device": "/dev/ttyACM0",
+		"light_hours": 3,
+		"light_max": 0.7,
+		"light_fade_hours": 2,
+		"update_interval": 120000
 	}
 }
