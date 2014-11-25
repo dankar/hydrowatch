@@ -12,9 +12,9 @@
 	},
 	"logger": {
 		"serial_device": "/dev/ttyACM0",
-		"light_hours": 3,
+		"light_hours": 5,
 		"light_max": 0.7,
-		"light_fade_hours": 2,
+		"light_fade_hours": 3,
 		"update_interval": 120000
 	}
 }

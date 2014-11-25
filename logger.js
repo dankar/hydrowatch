@@ -198,8 +198,8 @@ module.exports = {
 	updateLight: function (device, callback) {
 		var day_secs = 86400.0,
 			hour_secs = 3600.0,
-			now = new Date().getTime(),
-			midnight = new Date().setHours(0,0,0,0),
+			now = new Date().getTime()/1000,
+			midnight = new Date().setHours(0,0,0,0)/1000,
 			delta = now - midnight,
 			light = 0.0,
 			current_hour = delta / 3600.0 - 12;
@@ -215,6 +215,5 @@ module.exports = {
 			light = 0.0
 		}
 		this.writeSerialLine("set-light-value " + light + "\n");
-		console.log("Setting light to " + light,(Math.abs(current_hour), (config.logger.light_hours/2) + config.logger.light_fade_hours) );
 	}
 };
