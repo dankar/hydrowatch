@@ -185,11 +185,11 @@ module.exports = {
 			midnight = new Date().setHours(0,0,0,0),
 			delta = now - midnight,
 			light = 0.0,
-			current_hour = delta.seconds / 3600.0 - 12;
+			current_hour = delta / 3600.0 - 12;
 
 		if (Math.abs(current_hour) < config.logger.light_hours / 2) {
 			light = config.logger.light_max;
-		} else if (Math.abs(current_hour) < (config.logger.light_hours/2) + config.light_fade_hours) {
+		} else if (Math.abs(current_hour) < (config.logger.light_hours/2) + config.logger.light_fade_hours) {
 			sign = current_hour / current_hour;
 			fade_amount = (Math.abs(current_hour) - (config.logger.light_hours/2)) * sign;
 			fade_amount = fade_amount / config.logger.light_fade_hours;
@@ -198,5 +198,6 @@ module.exports = {
 			light = 0.0
 		}
 		this.writeSerialLine("set-light-value " + light + "\n");
+		console.log("Setting light to " + light,(Math.abs(current_hour), (config.logger.light_hours/2) + config.logger.light_fade_hours) );
 	}
 };
