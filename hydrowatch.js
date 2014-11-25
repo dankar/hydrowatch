@@ -85,7 +85,7 @@ function get_states()
 		console.log("Datasource error");
 	}
 }
-						
+
 
 function send_data(socket)
 {
@@ -98,7 +98,6 @@ function send_data(socket)
 	get_history('water_level');
 	get_history('light_level');
 	get_history('tds_level');
-	
 	get_states();
 }
 
@@ -111,21 +110,17 @@ function post_command(cmd)
 		console.log("Could not write to database, command ignored");
 	}
 }
-	
+
 
 function parse_message(msg)
 {
 	if(msg.msg == 'set-light')
 	{
 		post_command('set-light ' + msg.data);
-		// We wait a bit before getting the new state after sending the command.
-		// This should be done with intelligence instead of waiting a set time.
-		setTimeout(get_states, 2000);
 	}
 	if(msg.msg == 'set-motor')
 	{
 		post_command('set-motor ' + msg.data);
-		setTimeout(get_states, 2000);
 	}
 }
 
@@ -140,6 +135,12 @@ function send_cache(socket)
 	}
 }
 
+function updater()
+{
+	console.log('Sending update');
+	send_data(io.sockets);
+}
+
 datasource.Init(function(){
 
 	io = socketio.listen(server).set('log level', 0);
@@ -151,15 +152,7 @@ datasource.Init(function(){
 
 	logger.Init(function() {
 		console.log("Logger initiated");
-	});
+	}, updater);
 
 });
-
-function updater()
-{
-	send_data(io.sockets);
-	setTimeout(updater, 30000);
-}
-
-updater();
 

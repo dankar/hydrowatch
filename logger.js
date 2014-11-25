@@ -2,10 +2,11 @@ var sqlite3 = require('sqlite3'),
 	config = require('./config.json'),
 	datasource = require('./datasource.js'),
 	util = require('util'),
-	SerialPort = require("serialport").SerialPort;
+	serialport = require("serialport")
+	SerialPort = serialport.SerialPort;
 
 module.exports = {
-	Init: function (callback) {
+	Init: function (callback, updater) {
 
 		this.queries = Array();
 		this.queries['create_log_value_table'] = 'CREATE TABLE %s (id INTEGER PRIMARY KEY, value INT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)';
@@ -19,22 +20,22 @@ module.exports = {
 		this.queries['clear_command_table'] = 'DELETE FROM commands';
 
 		this.next_update = new Date().getTime();
+		this.updater = updater;
 
 		// Set up serial port
-		this.device = new SerialPort(config.logger.serial_device, { baudrate: 115200 });
+		this.device = new SerialPort(config.logger.serial_device, { baudrate: 115200, parser: serialport.parsers.readline("\n")});
 
 		// Wait five seconds to make sure the arduino is booted
-  		this.device.on("open", function () {
+		this.device.on("open", function () {
 			console.log('Serial port opened');
-	
+
 			// Pass incoming data to this.readSerialLine
 			this.device.on('data', function(data) {
 				this.readSerialLine(data);
 			}.bind(this));
 
 			// Now when the serial port is up and running, we can start the recursion towards infinity
-			this.doEvents();
-
+			setTimeout(this.doEvents.bind(this), 3000, this);
 		}.bind(this));
 
 		callback && callback();
@@ -63,65 +64,83 @@ module.exports = {
 		});
 	},
 	readSerialLine: function (data, callback) {
-		this.parseReport(data, callback);
+		if(data.length == 0) // empty line means end of report, this triggers refresh of the web ui
+		{
+			setTimeout(this.updater, 2000); // TODO: This is ugly
+		}
+		else
+		{
+			this.parseReport(data, callback);
+		}
 	},
 	createLogTable: function (table, callback) {
+		console.log('Creating log table: ' + table);
 		datasource.db.run(util.format(this.queries['create_log_value_table'],table), function() {
 			callback && callback();
 		});
 	},
 	createStateTable: function (callback) {
+		console.log('Creating state table');
 		datasource.db.run(this.queries['create_state_value_table'], function () {
 			callback && callback();
 		});
-		
 	},
 	createCommandTable: function (callback) {
 		datasource.db.run(this.queries['create_command_table_query'], function() {
-			callback && callback();	
+			callback && callback();
 		});
 	},
 	insertState: function (name, value, callback) {
 		datasource.db.run(util.format(this.queries['remove_state_value'],name),function () {
-			datasource.db.run(util.format(this.queries['store_state_value'],name,value),function () {
-				callback && callback();
-			});
-		});
+			datasource.db.run(util.format(this.queries['store_state_value'],name,value),
+			function (err) {
+				if(!err)
+				{
+					callback && callback();
+				}
+				else
+				{
+					this.createStateTable(
+						function()
+						{
+							this.insertState(name, value, callback); // TODO: possible infinite loop
+						}.bind(this));
+				}
+			}.bind(this));
+		}.bind(this));
 	},
 	insertLogRow: function (table, value, callback) {
-		datasource.db.run(util.format(this.queries['store_log_value'],table,value), function() {
-			callback && callback();	
-		});
+		datasource.db.run(util.format(this.queries['store_log_value'],table,value), 
+		function(err) {
+			if(!err)
+			{
+				callback && callback();
+			}
+			else
+			{
+				this.createLogTable(table,
+					function()
+					{
+						this.insertLogRow(table, value, callback); // TODO: possible infinite loop
+					}.bind(this));
+			}
+		}.bind(this));
 	},
 	storeLogRow: function (data, callback) {
 		var result = data.split("=");
-		// We might need to use err callbacks instead of try {} catch {} here, not sure anything is thrown
-		try {
-			insertLogRow(result[0], result[1], callback);
-		} catch (e) {
-			createLogTable(table);
-			insertLogRow(result[0], result[1], callback);
-		}
+		this.insertLogRow(result[0], result[1], callback);
 	},
 	storeState: function (data,callback) {
 		var result = data.split("=");
-		// We might need to use err callbacks instead of try {} catch {} here, not sure anything is thrown
-		try {
-			this.insertState(result[0], result[1], callback);
-		} catch (e) {
-			this.createStateTable(table);
-			this.insertState(result[0], result[1], callback);
-		}
+		this.insertState(result[0], result[1], callback);
 	},
 	parseReport: function (report, callback) {
-		for (row in report) {
-			var result = row.split(' ');
-			if (result[0] == 'log_value') {
-				this.storeLogRow(result[1],callback);
-			}
-			if (result[0] == 'state') {
-				this.storeState(result[1],callback);
-			}
+		var result = report.split(' ');
+		if (result[0] == 'log_value') {
+			this.storeLogRow(result[1],callback);
+		}
+		if (result[0] == 'state') {
+			this.storeState(result[1],callback);
 		}
 	},
 	getReport: function (callback) {
@@ -132,19 +151,17 @@ module.exports = {
 	},
 	getCommands: function (callback,err) {
 		datasource.db.all(this.queries['get_commands_query'],
-			function(err, data){
-				if(!err)
+			function(dberr, data){
+				if(!dberr)
 				{
 					callback(data);
 				} else {
-					err();
+					err && err();
 				}
 			}
 		);
 	},
 	doCommandsCallback: function (commands, callback) {
-
-
 		var anythingDone = false;
 
 		for (command in commands) {
@@ -152,13 +169,13 @@ module.exports = {
 			this.writeSerialLine(txVal,function() {
 				this.writeSerialLine('\n');
 			}.bind(this));
-			anything_done = true; 
+			anythingDone = true;
 		}
 
 		datasource.db.run(this.queries['clear_command_table']);
 
 		if (anythingDone) {
-			this.getStates(device,callback());
+			setTimeout(function(){this.getStates(callback)}.bind(this), 1000); // TODO: This is an ugly timeout. Should only run when all commands has been sent
 		} else {
 			callback && callback();
 		}
@@ -170,8 +187,8 @@ module.exports = {
 				this.doCommandsCallback(data);
 			}.bind(this),
 			function(err) {
-				createCommandTable(function() {
-					getCommands(function(data) {
+				this.createCommandTable(function() {
+					this.getCommands(function(data) {
 						this.doCommandsCallback(data);
 					}.bind(this));
 				}.bind(this));
