@@ -6,7 +6,7 @@ var sqlite3 = require('sqlite3'),
 	SerialPort = serialport.SerialPort;
 
 module.exports = {
-	Init: function (callback) {
+	Init: function (callback, updater) {
 
 		this.queries = Array();
 		this.queries['create_log_value_table'] = 'CREATE TABLE %s (id INTEGER PRIMARY KEY, value INT, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)';
@@ -20,12 +20,13 @@ module.exports = {
 		this.queries['clear_command_table'] = 'DELETE FROM commands';
 
 		this.next_update = new Date().getTime();
+		this.updater = updater;
 
 		// Set up serial port
 		this.device = new SerialPort(config.logger.serial_device, { baudrate: 115200, parser: serialport.parsers.readline("\n")});
 
 		// Wait five seconds to make sure the arduino is booted
-  		this.device.on("open", function () {
+		this.device.on("open", function () {
 			console.log('Serial port opened');
 
 			// Pass incoming data to this.readSerialLine
@@ -63,7 +64,14 @@ module.exports = {
 		});
 	},
 	readSerialLine: function (data, callback) {
-		this.parseReport(data, callback);
+		if(data.length == 0) // empty line means end of report, this triggers refresh of the web ui
+		{
+			setTimeout(this.updater, 2000); // TODO: This is ugly
+		}
+		else
+		{
+			this.parseReport(data, callback);
+		}
 	},
 	createLogTable: function (table, callback) {
 		console.log('Creating log table: ' + table);
@@ -76,11 +84,10 @@ module.exports = {
 		datasource.db.run(this.queries['create_state_value_table'], function () {
 			callback && callback();
 		});
-		
 	},
 	createCommandTable: function (callback) {
 		datasource.db.run(this.queries['create_command_table_query'], function() {
-			callback && callback();	
+			callback && callback();
 		});
 	},
 	insertState: function (name, value, callback) {
@@ -96,7 +103,7 @@ module.exports = {
 					this.createStateTable(
 						function()
 						{
-							this.insertState(name, value, callback);
+							this.insertState(name, value, callback); // TODO: possible infinite loop
 						}.bind(this));
 				}
 			}.bind(this));
@@ -107,14 +114,14 @@ module.exports = {
 		function(err) {
 			if(!err)
 			{
-				callback && callback();	
+				callback && callback();
 			}
 			else
 			{
 				this.createLogTable(table,
 					function()
 					{
-						this.insertLogRow(table, value, callback);
+						this.insertLogRow(table, value, callback); // TODO: possible infinite loop
 					}.bind(this));
 			}
 		}.bind(this));
@@ -155,8 +162,6 @@ module.exports = {
 		);
 	},
 	doCommandsCallback: function (commands, callback) {
-
-
 		var anythingDone = false;
 
 		for (command in commands) {
@@ -164,13 +169,13 @@ module.exports = {
 			this.writeSerialLine(txVal,function() {
 				this.writeSerialLine('\n');
 			}.bind(this));
-			anything_done = true; 
+			anythingDone = true;
 		}
 
 		datasource.db.run(this.queries['clear_command_table']);
 
 		if (anythingDone) {
-			this.getStates(device,callback());
+			setTimeout(function(){this.getStates(callback)}.bind(this), 1000); // TODO: This is an ugly timeout. Should only run when all commands has been sent
 		} else {
 			callback && callback();
 		}
@@ -200,7 +205,7 @@ module.exports = {
 			current_hour = delta.seconds / 3600.0 - 12;
 
 		if (Math.abs(current_hour) < config.logger.light_hours / 2) {
-			light = config.logger.light_max;
+			light = dconfig.logger.light_max;
 		} else if (Math.abs(current_hour) < (config.logger.light_hours/2) + config.light_fade_hours) {
 			sign = current_hour / current_hour;
 			fade_amount = (Math.abs(current_hour) - (config.logger.light_hours/2)) * sign;
